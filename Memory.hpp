@@ -8,9 +8,7 @@ public:
     Memory(const std::string &proc_name):process_name_(proc_name)  {
         process_id_ = -2;
     }
-    Memory() {
-
-    }
+  
 
     void getProcessID();
     void openProcess();
@@ -39,7 +37,7 @@ public:
 
 
 private:
-    Memory(const Memory&);
+    Memory(const Memory&) = delete;
     void operator=(const Memory &) = delete;
     int process_id_;
     HANDLE process_handle_;

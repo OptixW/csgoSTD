@@ -1,11 +1,15 @@
 #pragma once
+#define IN_GAME 6
 #include <iostream>
 #include <memory>
-#include "Memory.hpp"
 #include "Offsets.hpp"
-#include "Local.hpp"
+#include "Aimbot.hpp"
+LocalPlayer* getEntityByCrosshairID(int crosshairID, int client);
+
 extern int client_dll;
 extern int engine_dll;
+extern void initialization();
 
 
-[[noreturn]] void initialization();
+
+

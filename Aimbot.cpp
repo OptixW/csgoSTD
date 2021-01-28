@@ -32,6 +32,21 @@ void CAimbot::ClampAngles(Vector3& angles)
 
 
 
+void CAimbot::calcAngle(const Vector& source, const Vector& dst, Vector &out)
+{
+	Vector delta;
+	
+	delta = source - dst;
+	double hyp = sqrt(delta.x * delta.x + delta.y * delta.y);
+
+	out.x = (float)(atan(delta.z / hyp) * 57.295779513082f);
+	out.y = (float)(atan(delta.y / delta.x) * 57.295779513082f);
+	out.z = 0.0f;
+
+	if (delta.x >= 0.0)
+		out.y += 180.0f;
+}
+
 void CAimbot::frame()
 {
 	RCS();

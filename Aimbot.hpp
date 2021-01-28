@@ -8,6 +8,7 @@ public:
 	void ClampAngles(Vector2& angles);
 	void ClampAngles(Vector3& angles);
 	void RCS();
+	void calcAngle(const Vector& source, const Vector& dst, Vector& out);
 	void update(LocalPlayer* pl, DWORD cl_state);
 	void frame();
 	void GetViewAngles(Vector2& angles);

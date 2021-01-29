@@ -1,19 +1,21 @@
 #pragma once
 #include "Local.hpp"
 #include "Math.hpp"
+constexpr int bone_head = 8;
+constexpr int bone_chest = 6;
 class CAimbot
 {
 public:
 	CAimbot();
-	void ClampAngles(Vector2& angles);
-	void ClampAngles(Vector3& angles);
+	void ClampAngles(Vector& angles) const;
 	void RCS();
-	void calcAngle(const Vector& source, const Vector& dst, Vector& out);
+	void calcAngle(Vector& source, Vector& dst, Vector& out) const;
 	void update(LocalPlayer* pl, DWORD cl_state);
 	void frame();
-	void GetViewAngles(Vector2& angles);
-	void SetViewAngles(const Vector2& angles)const;
+	void GetViewAngles(Vector& angles) const;
+	void SetViewAngles(const Vector& angles) const;
 	void TriggerBot(const LocalPlayer* Entity) const;
+	void getBonePos(int boneID, const LocalPlayer* Entity, Vector& out) const;
 private:
 	DWORD cl_state_;
 	LocalPlayer* lp_;

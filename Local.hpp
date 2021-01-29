@@ -9,10 +9,14 @@ public:
 	size_t getTeam() const;
 	size_t getCrosshairID() const;
 	size_t getShotsFireID() const;
-	Vector2 getPunchAngle() const;
+	Vector getPunchAngle() const;
+	Vector getPos() const;
+	Vector getEyeView() const; // only for localplayer
+	size_t GetBase();
+	DWORD getBoneObj() const;
 	
 	void SetBase(size_t);
-	bool isAlive();
+	bool isAlive() const;
 
 private:
 	size_t base_;

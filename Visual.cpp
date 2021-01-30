@@ -14,19 +14,19 @@ void visual::updateGlowInfo(LocalPlayer * Entity)
 	auto ent_glow_index = Entity->getMyGlowIndex();
 	
 	
-		GlowStruct myglow = mem.RPM<GlowStruct>(GlowObj + (ent_glow_index * 0x38) + 4);
-		makeGlow(myglow, GlowObj, ent_glow_index, 255, 255, 255, 255);
+		GlowStruct myglow = mem.RPM<GlowStruct>(GlowObj + (ent_glow_index * 0x38) + 0x4);
+		makeGlow(myglow, GlowObj, ent_glow_index, 0.1, 0, 102, 104);
 	
 }
 void visual::makeGlow(GlowStruct glowstruct,DWORD glowObj, DWORD PlayerGlow, float r, float g, float b, float a)
 {
-	glowstruct.R = r;
-	glowstruct.G = g;
-	glowstruct.B = b;
-	glowstruct.A = a;
-	glowstruct.rwo = true;
-	glowstruct.rwuo = false;
-	mem.WPM<GlowStruct>((glowObj + (PlayerGlow * 0x38) + 4), glowstruct);
+	glowstruct.r = r;
+	glowstruct.g = g;
+	glowstruct.b = b;
+	glowstruct.a = a;
+	glowstruct.m_bRenderWhenOccluded = true;
+	glowstruct.m_bRenderWhenUnoccluded = false;
+	mem.WPM<GlowStruct>((glowObj + (PlayerGlow * 0x38) + 0x4), glowstruct);
 	
 }
 
@@ -39,6 +39,7 @@ void visual::GlowEsp()
 	{
 		lp->SetBase(mem.RPM<size_t>(module_ + signatures::dwEntityList + i * 0x10));
 		updateGlowInfo(lp);
+		Sleep(5);
 	}
 	
 

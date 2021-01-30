@@ -4,16 +4,16 @@
 #include "Local.hpp"
 struct GlowStruct
 {
-	float R;
-	float G;
-	float B;
-	float A;
-	byte padding[16];
-	bool rwo;
-	bool rwuo;
+	float r = 1.f;
+	float g = 1.f;
+	float b = 1.f;
+	float a = 1.f;
+	char pad[16];
+	bool m_bRenderWhenOccluded = true; //0x24
+	bool m_bRenderWhenUnoccluded = false; //0x25
+	bool m_bFullBloomRender = false; //0x26
 };
-class visual
-{
+class visual {
 
 public:
 	

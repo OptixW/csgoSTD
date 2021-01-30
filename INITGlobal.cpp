@@ -41,9 +41,9 @@ void initialization() {
 		g_Aimbot.update(lp, cl_state);
 		g_Aimbot.frame();
 		g_Aimbot.TriggerBot(getEntityByCrosshairID(lp->getCrosshairID(), client_dll));
-	
-		//g_Visual.update(lp); TODO
-		//g_Visual.GlowEsp();
+		g_Visual.update(lp); //TODO
+		g_Visual.GlowEsp();
+		Sleep(10);
 
 	}
 

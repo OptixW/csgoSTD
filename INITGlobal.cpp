@@ -1,4 +1,5 @@
 #include "INITGlobal.hpp"
+#include <thread>
 std::string process_name = "csgo.exe";
 Memory mem(process_name);
 std::string module_client = "client.dll";
@@ -24,6 +25,7 @@ void initialization() {
 	int engine_dll = mem.getModuleBase(module_engine);
 	int cl_state = mem.RPM<int>(engine_dll + signatures::dwClientState);
 	CAimbot g_Aimbot;
+	visual g_Visual;
 	while (true)
 	{
 		auto game_state = mem.readInt(cl_state + signatures::dwClientState_State);
@@ -39,6 +41,9 @@ void initialization() {
 		g_Aimbot.update(lp, cl_state);
 		g_Aimbot.frame();
 		g_Aimbot.TriggerBot(getEntityByCrosshairID(lp->getCrosshairID(), client_dll));
+	
+		//g_Visual.update(lp); TODO
+		//g_Visual.GlowEsp();
 
 	}
 

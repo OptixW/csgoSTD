@@ -56,6 +56,11 @@ DWORD LocalPlayer::getBoneObj() const
     return mem.RPM<DWORD>(base_ + netvars::m_dwBoneMatrix);
 }
 
+DWORD LocalPlayer::getMyGlowIndex() const
+{
+    return mem.RPM<DWORD>(base_ + netvars::m_iGlowIndex);
+}
+
 void LocalPlayer::SetBase(size_t b) {
     base_ = b;
 }

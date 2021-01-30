@@ -72,7 +72,7 @@ void CAimbot::update(LocalPlayer* pl, DWORD cl_state)
 
 void CAimbot::getBonePos(int boneID, const LocalPlayer* Entity, Vector &out) const
 {
-	DWORD boneBase = Entity->getBoneObj();
+	auto boneBase = Entity->getBoneObj();
 	Vector vBone;
 	vBone.x = mem.RPM<float>(boneBase + 0x30 * boneID + 0x0C);
 	vBone.y = mem.RPM<float>(boneBase + 0x30 * boneID + 0x1C);

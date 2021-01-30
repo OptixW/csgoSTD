@@ -14,7 +14,7 @@ public:
 	Vector getEyeView() const; // only for localplayer
 	size_t GetBase();
 	DWORD getBoneObj() const;
-	
+	DWORD getMyGlowIndex() const;
 	void SetBase(size_t);
 	bool isAlive() const;
 

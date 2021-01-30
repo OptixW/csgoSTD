@@ -4,6 +4,7 @@
 #include <memory>
 #include "Offsets.hpp"
 #include "Aimbot.hpp"
+#include "Visual.hpp"
 LocalPlayer* getEntityByCrosshairID(int crosshairID, int client);
 
 extern int client_dll;

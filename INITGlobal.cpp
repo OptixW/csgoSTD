@@ -1,16 +1,22 @@
 #include "INITGlobal.hpp"
 #include <thread>
+#include "IBaseGame.hpp"
 std::string process_name = "csgo.exe";
 Memory mem(process_name);
-std::string module_client = "client.dll";
-std::string module_engine = "engine.dll";
 
 void initialization();
 
+LocalPlayer * getEntityByCrosshairID(int crosshairID)
+{
+	LocalPlayer* pl = new LocalPlayer();
 
-void initialization() {
-	
-
+	pl->SetBase(mem.readInt(init::client_dll + signatures::dwEntityList + (crosshairID - 1) * 0x10));
+	return pl;
+}
+int init::client_dll;
+int init::engine_dll;
+int init::client_state;
+void initialization(){
 	mem.getProcessID();
 	try {
 		mem.openProcess();
@@ -19,40 +25,42 @@ void initialization() {
 		std::cout << ex;
 		Sleep(10000);
 		exit(0);
-	}
 
-	int client_dll = mem.getModuleBase(module_client);
-	int engine_dll = mem.getModuleBase(module_engine);
-	int cl_state = mem.RPM<int>(engine_dll + signatures::dwClientState);
-	CAimbot g_Aimbot;
-	visual g_Visual;
-	while (true)
-	{
-		auto game_state = mem.readInt(cl_state + signatures::dwClientState_State);
-		if (game_state != IN_GAME)
+	}
+		std::string module_client = "client.dll";
+		std::string module_engine = "engine.dll";
+
+		init::client_dll = mem.getModuleBase(module_client);
+		init::engine_dll = mem.getModuleBase(module_engine);
+		init::client_state = mem.RPM<int>(init::engine_dll + signatures::dwClientState);
+
+
+		CAimbot g_Aimbot;
+		visual g_Visual;
+		while (true)
 		{
-			Sleep(1000);
-			continue;
+			auto game_state = mem.RPM<DWORD>(init::client_state +signatures::dwClientState_State);
+			if (game_state != IN_GAME)
+			{
+				Sleep(1000);
+				continue;
+			}
+
+			LocalPlayer* lp = new LocalPlayer();
+			lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
+
+			g_Aimbot.update(lp, init::client_state);
+			g_Aimbot.frame();
+			g_Aimbot.TriggerBot(getEntityByCrosshairID(lp->getCrosshairID()));
+			//	g_Visual.update(lp); //TODO
+				//g_Visual.GlowEsp();
+			Sleep(10);
+
 		}
-
-		LocalPlayer* lp = new LocalPlayer();
-		lp->SetBase(mem.RPM<DWORD>(client_dll + signatures::dwLocalPlayer));
-		
-		g_Aimbot.update(lp, cl_state);
-		g_Aimbot.frame();
-		g_Aimbot.TriggerBot(getEntityByCrosshairID(lp->getCrosshairID(), client_dll));
-		g_Visual.update(lp); //TODO
-		g_Visual.GlowEsp();
-		Sleep(10);
-
+		Sleep(10000);
 	}
+		
 
-	Sleep(10000);
-}
 
-LocalPlayer* getEntityByCrosshairID(int crosshairID, int client)
-{
-	LocalPlayer* pl = new LocalPlayer();
-	pl->SetBase(mem.readInt(client + signatures::dwEntityList + (crosshairID - 1) * 0x10));
-	return pl;
-}
+
+

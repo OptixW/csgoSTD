@@ -146,5 +146,7 @@ namespace netvars {
 			constexpr ::std::ptrdiff_t model_ambient_min = 0x59205C;
 			constexpr ::std::ptrdiff_t set_abs_angles = 0x1DF9C0;
 			constexpr ::std::ptrdiff_t set_abs_origin = 0x1DF800;
+		
+
 		}
 	

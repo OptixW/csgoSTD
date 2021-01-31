@@ -1,4 +1,6 @@
 #include "Aimbot.hpp"
+#include <iostream>
+
 
 
 
@@ -48,7 +50,7 @@ void CAimbot::RCS()//todo
 		Vector m_PunchAngle = lp_->getPunchAngle();
 		GetViewAngles(mView);
 		mView += old;
-		m_PunchAngle *= 2.0;
+		m_PunchAngle *= 1.7f;
 		angle = mView - m_PunchAngle;
 		ClampAngles(angle);
 		SetViewAngles(angle);
@@ -70,7 +72,7 @@ void CAimbot::update(LocalPlayer* pl, DWORD cl_state)
 }
 
 
-void CAimbot::getBonePos(int boneID, const LocalPlayer* Entity, Vector &out) const
+void CAimbot::getBonePos(int boneID, const LocalPlayer * Entity, Vector &out) const
 {
 	auto boneBase = Entity->getBoneObj();
 	Vector vBone;
@@ -82,13 +84,14 @@ void CAimbot::getBonePos(int boneID, const LocalPlayer* Entity, Vector &out) con
 
 void CAimbot::GetViewAngles(Vector& angles) const
 {
-	angles = mem.RPM<Vector>(cl_state_ + signatures::dwClientState_ViewAngles);
+
+	angles = mem.RPM<Vector>(init::client_state + signatures::dwClientState_ViewAngles);
 }
 
 void CAimbot::SetViewAngles(const Vector& angles) const
 {
-	mem.WPM<float>(cl_state_ + signatures::dwClientState_ViewAngles, angles.x);
-	mem.WPM<float>(cl_state_ + signatures::dwClientState_ViewAngles+0x4, angles.y);
+	mem.WPM<float>(init::client_state +signatures::dwClientState_ViewAngles, angles.x);
+	mem.WPM<float>(init::client_state + signatures::dwClientState_ViewAngles+0x4, angles.y);
 }
 
 CAimbot::CAimbot()
@@ -102,7 +105,7 @@ void CAimbot::TriggerBot(const LocalPlayer * Entity) const
 			[&]() {
 				Vector source = lp_->getPos() + lp_->getEyeView();
 				Vector target;
-				getBonePos(bone_chest, Entity, target);
+				getBonePos(bone_head, Entity, target);
 				calcAngle(source, target, target);
 				target -= lp_->getPunchAngle() * 2.0f;
 				SetViewAngles(target);

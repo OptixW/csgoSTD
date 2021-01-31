@@ -2,6 +2,7 @@
 #include "Memory.hpp"
 #include "Offsets.hpp"
 #include "Local.hpp"
+#include "IBaseGame.hpp"
 struct GlowStruct
 {
 	float r = 1.f;
@@ -24,5 +25,5 @@ public:
 private:
 	LocalPlayer* lp_;
 	void makeGlow(GlowStruct glowstruct, DWORD glowObj, DWORD PlayerGlow, float r, float g, float b, float a);
-	void updateGlowInfo(LocalPlayer* Entity);
+	void updateGlowInfo(LocalPlayer * Entity);
 }; extern visual g_Visual;

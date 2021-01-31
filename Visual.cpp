@@ -3,11 +3,10 @@
 
 
 
-void visual::updateGlowInfo(LocalPlayer * Entity)
+void visual::updateGlowInfo(LocalPlayer* Entity)
 {
-	std::string module_cl = "client.dll";
-	DWORD module_ = mem.getModuleBase(module_cl);
-	auto GlowObj = mem.RPM<int>(module_ + signatures::dwGlowObjectManager);
+
+	auto GlowObj = mem.RPM<int>(init::client_dll + signatures::dwGlowObjectManager);
 
 	auto my_team = lp_->getTeam();
 	auto ent_team = Entity->getTeam();
@@ -32,12 +31,10 @@ void visual::makeGlow(GlowStruct glowstruct,DWORD glowObj, DWORD PlayerGlow, flo
 
 void visual::GlowEsp()
 {
-	std::string module_cl = "client.dll";
-	DWORD module_ = mem.getModuleBase(module_cl);
-	LocalPlayer* lp = new LocalPlayer();
+	 LocalPlayer* lp = new LocalPlayer();
 	for (auto i = 0; i < 32; i++)
 	{
-		lp->SetBase(mem.RPM<size_t>(module_ + signatures::dwEntityList + i * 0x10));
+		lp->SetBase(mem.RPM<size_t>(init::client_dll + signatures::dwEntityList + i * 0x10));
 		updateGlowInfo(lp);
 		Sleep(5);
 	}

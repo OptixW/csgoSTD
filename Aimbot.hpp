@@ -1,6 +1,8 @@
 #pragma once
 #include "Local.hpp"
 #include "Math.hpp"
+#include "IBaseGame.hpp"
+#include <memory>
 constexpr int bone_head = 8;
 constexpr int bone_chest = 6;
 class CAimbot

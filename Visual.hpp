@@ -20,10 +20,11 @@ public:
 	
 	void GlowEsp();
 	void update(LocalPlayer* pl);
-
+	
 
 private:
-	LocalPlayer* lp_;
 	void makeGlow(GlowStruct glowstruct, DWORD glowObj, DWORD PlayerGlow, float r, float g, float b, float a);
-	void updateGlowInfo(LocalPlayer * Entity);
+	void updateGlowInfo(std::shared_ptr<LocalPlayer> Entity);
+	 LocalPlayer* lp_;
+	
 }; extern visual g_Visual;

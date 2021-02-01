@@ -71,8 +71,13 @@ void CAimbot::update(LocalPlayer* pl, DWORD cl_state)
 
 }
 
+int CAimbot::nearestBone(const std::shared_ptr<LocalPlayer> Entity) const
+{
+	return 8;
+}
 
-void CAimbot::getBonePos(int boneID, const LocalPlayer * Entity, Vector &out) const
+
+void CAimbot::getBonePos(int boneID, const std::shared_ptr<LocalPlayer> Entity, Vector &out) const
 {
 	auto boneBase = Entity->getBoneObj();
 	Vector vBone;
@@ -98,7 +103,7 @@ CAimbot::CAimbot()
 {
 }
 
-void CAimbot::TriggerBot(const LocalPlayer * Entity) const
+void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer> Entity) const
 {
 	if (GetAsyncKeyState(VK_MENU) != 0) {
 		if (Entity->getHP() > 0 && Entity->getTeam() != lp_->getTeam()) {

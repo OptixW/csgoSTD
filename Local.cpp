@@ -42,7 +42,12 @@ Vector LocalPlayer::getEyeView() const
 }
 
 
-
+std::shared_ptr<LocalPlayer> LocalPlayer::getEntityByCrosshairID(int crosshairID) const
+{
+    std::shared_ptr<LocalPlayer> pl(new LocalPlayer());
+    pl->SetBase(mem.readInt(init::client_dll + signatures::dwEntityList + (crosshairID - 1) * 0x10));
+    return pl;
+}
 
 
 

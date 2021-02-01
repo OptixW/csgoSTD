@@ -16,8 +16,9 @@ public:
 	void frame();
 	void GetViewAngles(Vector& angles) const;
 	void SetViewAngles(const Vector& angles) const;
-	void TriggerBot(const LocalPlayer* Entity) const;
-	void getBonePos(int boneID, const LocalPlayer* Entity, Vector& out) const;
+	void TriggerBot(const std::shared_ptr<LocalPlayer> Entity) const;
+	void getBonePos(int boneID, const std::shared_ptr<LocalPlayer> Entity, Vector& out) const;
+	int  nearestBone(const std::shared_ptr<LocalPlayer> Entity) const;
 private:
 	DWORD cl_state_;
 	LocalPlayer* lp_;

@@ -1,18 +1,14 @@
 #include "INITGlobal.hpp"
 #include <thread>
 #include "IBaseGame.hpp"
+#include <functional>
+
 std::string process_name = "csgo.exe";
 Memory mem(process_name);
 
 void initialization();
 
-LocalPlayer * getEntityByCrosshairID(int crosshairID)
-{
-	LocalPlayer* pl = new LocalPlayer();
 
-	pl->SetBase(mem.readInt(init::client_dll + signatures::dwEntityList + (crosshairID - 1) * 0x10));
-	return pl;
-}
 int init::client_dll;
 int init::engine_dll;
 int init::client_state;
@@ -34,9 +30,11 @@ void initialization(){
 		init::engine_dll = mem.getModuleBase(module_engine);
 		init::client_state = mem.RPM<int>(init::engine_dll + signatures::dwClientState);
 
-
+		
 		CAimbot g_Aimbot;
 		visual g_Visual;
+		
+	//	thr.detach();
 		while (true)
 		{
 			auto game_state = mem.RPM<DWORD>(init::client_state +signatures::dwClientState_State);
@@ -51,10 +49,10 @@ void initialization(){
 
 			g_Aimbot.update(lp, init::client_state);
 			g_Aimbot.frame();
-			g_Aimbot.TriggerBot(getEntityByCrosshairID(lp->getCrosshairID()));
-			//	g_Visual.update(lp); //TODO
-				//g_Visual.GlowEsp();
-			Sleep(10);
+			g_Aimbot.TriggerBot(lp->getEntityByCrosshairID((lp->getCrosshairID())));
+			g_Visual.update(lp);
+			g_Visual.GlowEsp();
+			Sleep(5);
 
 		}
 		Sleep(10000);

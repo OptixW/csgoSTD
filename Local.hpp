@@ -2,6 +2,7 @@
 #include "Math.hpp"
 #include "Offsets.hpp"
 #include "Memory.hpp"
+#include "IBaseGame.hpp"
 class LocalPlayer {
 public:
 
@@ -12,6 +13,7 @@ public:
 	Vector getPunchAngle() const;
 	Vector getPos() const;
 	Vector getEyeView() const; // only for localplayer
+	std::shared_ptr<LocalPlayer> getEntityByCrosshairID(int crosshairID) const;
 	size_t GetBase();
 	DWORD getBoneObj() const;
 	DWORD getMyGlowIndex() const;

@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <string>
 #include <TlHelp32.h>
-
+#include <memory>
 class Memory {
 public:
     Memory(const std::string &proc_name):process_name_(proc_name)  {

@@ -107,7 +107,9 @@ void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer> Entity) const
 {
 	if (GetAsyncKeyState(VK_MENU) != 0) {
 		if (Entity->getHP() > 0 && Entity->getTeam() != lp_->getTeam()) {
-			[&]() {
+			 [&](bool p) {
+				 if (!p)
+					 return;
 				Vector source = lp_->getPos() + lp_->getEyeView();
 				Vector target;
 				getBonePos(bone_head, Entity, target);
@@ -115,7 +117,7 @@ void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer> Entity) const
 				target -= lp_->getPunchAngle() * 2.0f;
 				SetViewAngles(target);
 				
-			}();
+			}(lp_->Pistol());
 			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
 			Sleep(5);
 			mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);

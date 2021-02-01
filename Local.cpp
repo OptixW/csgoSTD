@@ -1,6 +1,19 @@
 #include "Local.hpp"
+#include <iostream>
 
 
+int LocalPlayer::getWeaponId() const
+{
+    int weapon = mem.readInt(base_ + netvars::m_hActiveWeapon);
+    int weaponEnt = mem.readInt(init::client_dll + signatures::dwEntityList + ((weapon & 0xFFF) - 1) * 0x10); 
+    int weaponID = mem.readInt(weaponEnt + netvars::m_iItemDefinitionIndex);
+    return weaponID;
+}
+
+bool LocalPlayer::Pistol() const
+{
+    return IsPistol(getWeaponId());
+}
 
 size_t LocalPlayer::getHP() const{
     ptrdiff_t offset = base_ + netvars::m_iHealth;

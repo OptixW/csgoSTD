@@ -49,6 +49,12 @@ Vector LocalPlayer::getPos() const
     return mem.RPM<Vector>(base_ + netvars::m_vecOrigin);
 }
 
+DWORD LocalPlayer::getInput() const
+{
+    
+    return init::client_dll + signatures::dwInput;
+}
+
 Vector LocalPlayer::getEyeView() const
 {
     return mem.RPM<Vector>(base_ + netvars::m_vecViewOffset);

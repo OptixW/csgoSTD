@@ -14,6 +14,7 @@ public:
 	size_t getShotsFireID() const;
 	Vector getPunchAngle() const;
 	Vector getPos() const;
+	DWORD getInput() const;
 	Vector getEyeView() const; // only for localplayer
 	std::shared_ptr<LocalPlayer> getEntityByCrosshairID(int crosshairID) const;
 	size_t GetBase();

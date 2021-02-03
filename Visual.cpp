@@ -19,7 +19,7 @@ void visual::updateGlowInfo(std::shared_ptr<LocalPlayer> Entity)
 		makeGlow(myglow, GlowObj, ent_glow_index, 0.1, 0, 102, 104);
 	}
 }
-void visual::makeGlow(GlowStruct glowstruct,DWORD glowObj, DWORD PlayerGlow, float r, float g, float b, float a)
+void visual::makeGlow(GlowStruct glowstruct, DWORD glowObj, DWORD PlayerGlow, float r, float g, float b, float a)
 {
 	glowstruct.r = r;
 	glowstruct.g = g;
@@ -29,12 +29,13 @@ void visual::makeGlow(GlowStruct glowstruct,DWORD glowObj, DWORD PlayerGlow, flo
 	glowstruct.m_bRenderWhenUnoccluded = false;
 	mem.WPM<GlowStruct>((glowObj + (PlayerGlow * 0x38) + 0x4), glowstruct);
 	Sleep(1);
-	
+
 }
 
 void visual::GlowEsp()
 {
-	if (GetAsyncKeyState(VK_F12 & 0x01)) {
+
+	if (GetAsyncKeyState(VK_F1) != 0) {
 		std::shared_ptr<LocalPlayer> lp(new LocalPlayer());
 		for (auto i = 0; i < 32; i++)
 		{
@@ -45,7 +46,7 @@ void visual::GlowEsp()
 	else {
 		return;
 	}
-		
+
 }
 
 void visual::update(LocalPlayer* pl)

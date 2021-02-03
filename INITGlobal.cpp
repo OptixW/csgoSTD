@@ -1,5 +1,4 @@
 #include "INITGlobal.hpp"
-#include <thread>
 #include "IBaseGame.hpp"
 
 std::string process_name = "csgo.exe";

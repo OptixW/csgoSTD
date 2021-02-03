@@ -5,6 +5,7 @@
 #include <memory>
 constexpr int bone_head = 8;
 constexpr int bone_chest = 6;
+constexpr int bone_neck = 7;
 class CAimbot
 {
 public:
@@ -16,9 +17,9 @@ public:
 	void frame();
 	void GetViewAngles(Vector& angles) const;
 	void SetViewAngles(const Vector& angles) const;
+	void SilentSetViewAngles(const Vector& angles) const;
 	void TriggerBot(const std::shared_ptr<LocalPlayer> Entity) const;
 	void getBonePos(int boneID, const std::shared_ptr<LocalPlayer> Entity, Vector& out) const;
-	int  nearestBone(const std::shared_ptr<LocalPlayer> Entity) const;
 private:
 	DWORD cl_state_;
 	LocalPlayer* lp_;

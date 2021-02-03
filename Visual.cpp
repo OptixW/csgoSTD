@@ -34,19 +34,13 @@ void visual::makeGlow(GlowStruct glowstruct, DWORD glowObj, DWORD PlayerGlow, fl
 
 void visual::GlowEsp()
 {
-
-	if (GetAsyncKeyState(VK_F1) != 0) {
 		std::shared_ptr<LocalPlayer> lp(new LocalPlayer());
-		for (auto i = 0; i < 32; i++)
+		for (auto i = 0; i < 16; i++)
 		{
 			lp->SetBase(mem.RPM<size_t>(init::client_dll + signatures::dwEntityList + i * 0x10));
 			updateGlowInfo(lp);
 		}
-	}
-	else {
-		return;
-	}
-
+	
 }
 
 void visual::update(LocalPlayer* pl)

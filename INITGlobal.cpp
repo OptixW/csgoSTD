@@ -1,12 +1,13 @@
 #include "INITGlobal.hpp"
 #include "IBaseGame.hpp"
+#include <thread>
 
 std::string process_name = "csgo.exe";
 Memory mem(process_name);
 
 void initialization();
-
-
+void espThread();
+visual g_Visual;
 int init::client_dll;
 int init::engine_dll;
 int init::client_state;
@@ -30,8 +31,9 @@ void initialization(){
 
 		
 		CAimbot g_Aimbot;
-		visual g_Visual;
-
+		
+		std::thread thr(espThread);
+		thr.detach();
 		while (true)
 		{
 			auto game_state = mem.RPM<DWORD>(init::client_state +signatures::dwClientState_State);
@@ -46,15 +48,24 @@ void initialization(){
 			g_Aimbot.update(lp, init::client_state);
 			g_Aimbot.frame();
 			g_Aimbot.TriggerBot(lp->getEntityByCrosshairID((lp->getCrosshairID())));
-			g_Visual.update(lp);
-			g_Visual.GlowEsp();
 			Sleep(5);
 
 		}
 		Sleep(10000);
 	}
 		
-
+void espThread()
+{
+	while (true)
+	{
+		LocalPlayer* lp = new LocalPlayer();
+		lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
+		g_Visual.update(lp);
+		g_Visual.GlowEsp();
+		Sleep(10);
+	}
+	
+}
 
 
 

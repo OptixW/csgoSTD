@@ -8,7 +8,11 @@ public:
     Memory(const std::string &proc_name):process_name_(proc_name)  {
         process_id_ = -2;
     }
-  
+    ~Memory()
+    {
+        if (process_handle_ != nullptr)
+            CloseHandle(process_handle_);
+    }
 
     void getProcessID();
     void openProcess();

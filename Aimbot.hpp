@@ -13,16 +13,16 @@ public:
 	void ClampAngles(Vector& angles) const;
 	void RCS();
 	void calcAngle(Vector& source, Vector& dst, Vector& out) const;
-	void update(LocalPlayer* pl, DWORD cl_state);
+	void update(std::shared_ptr<LocalPlayer>& Entity, DWORD cl_state);
 	void frame();
 	void GetViewAngles(Vector& angles) const;
 	void SetViewAngles(const Vector& angles) const;
 	void SilentSetViewAngles(const Vector& angles) const;
-	void TriggerBot(const std::shared_ptr<LocalPlayer> Entity) const;
-	void getBonePos(int boneID, const std::shared_ptr<LocalPlayer> Entity, Vector& out) const;
+	void TriggerBot(const std::shared_ptr<LocalPlayer> &Entity) const;
+	void getBonePos(int boneID, const std::shared_ptr<LocalPlayer> &Entity, Vector& out) const;
 private:
 	DWORD cl_state_;
-	LocalPlayer* lp_;
+	std::shared_ptr<LocalPlayer> lp_;
 }; 
 extern CAimbot g_Aimbot;
 

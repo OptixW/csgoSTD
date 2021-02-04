@@ -19,13 +19,13 @@ class visual {
 public:
 	
 	 void GlowEsp();
-	 void update(LocalPlayer* pl);
+	 void update(std::shared_ptr<LocalPlayer>& pl);
 	
 
 private:
 	 void makeGlow(GlowStruct glowstruct, DWORD glowObj, DWORD PlayerGlow, float r, float g, float b, float a);
-	 void updateGlowInfo(std::shared_ptr<LocalPlayer> Entity);
-	 LocalPlayer* lp_;
+	 void updateGlowInfo(std::shared_ptr<LocalPlayer> &Entity);
+	 std::shared_ptr<LocalPlayer> lp_;
 	 bool active_;
 	
 }; 

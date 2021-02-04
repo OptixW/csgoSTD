@@ -5,7 +5,7 @@
 
 
 
-void visual::updateGlowInfo(std::shared_ptr<LocalPlayer> Entity)
+void visual::updateGlowInfo(std::shared_ptr<LocalPlayer> &Entity)
 {
 
 	auto GlowObj = mem.RPM<int>(init::client_dll + signatures::dwGlowObjectManager);
@@ -13,7 +13,7 @@ void visual::updateGlowInfo(std::shared_ptr<LocalPlayer> Entity)
 	auto my_team = lp_->getTeam();
 	auto ent_team = Entity->getTeam();
 	auto ent_glow_index = Entity->getMyGlowIndex();
-	if (my_team != ent_team)
+	if (my_team != ent_team && (my_team == 3 || my_team == 2))
 	{
 		GlowStruct myglow = mem.RPM<GlowStruct>(GlowObj + (ent_glow_index * 0x38) + 0x4);
 		makeGlow(myglow, GlowObj, ent_glow_index, 0.1, 0, 102, 104);
@@ -43,7 +43,7 @@ void visual::GlowEsp()
 	
 }
 
-void visual::update(LocalPlayer* pl)
+void visual::update(std::shared_ptr<LocalPlayer>& pl)
 {
 	lp_ = pl;
 }

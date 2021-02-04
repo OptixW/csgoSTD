@@ -62,7 +62,7 @@ void CAimbot::RCS()//todo
 	}
 }
 
-void CAimbot::update(LocalPlayer* pl, DWORD cl_state)
+void CAimbot::update(std::shared_ptr<LocalPlayer> &pl , DWORD cl_state)
 {
 	if (pl == nullptr)
 		return;
@@ -84,7 +84,7 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	iUserCMDSequenceNumberBase = mem.RPM<int>(dwUserCMD + 0x0);
 	int iUserCMDSequenceNumber = 0;
 
-	mem.WPM<byte>(init::engine_dll + signatures::dwbSendPackets, 0);
+//	mem.WPM<byte>(init::engine_dll + signatures::dwbSendPackets, 0);
 	while (iUserCMDSequenceNumber != current_sequence_number)
 	{
 		iUserCMDSequenceNumber = mem.readInt(iUserCMDSequenceNumberBase + 0x4);
@@ -92,7 +92,7 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	//
 	// your command to pcmd
 	//
-	mem.WPM<byte>(init::engine_dll + signatures::dwbSendPackets, 1);
+	//mem.WPM<byte>(init::engine_dll + signatures::dwbSendPackets, 1);
 	//mem.WPM<Vector>(dwUserCMD + 0xC, angles);write your viewAngles
 
 }
@@ -100,7 +100,7 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 
 
 
-void CAimbot::getBonePos(int boneID, const std::shared_ptr<LocalPlayer> Entity, Vector& out) const
+void CAimbot::getBonePos(int boneID, const std::shared_ptr<LocalPlayer>& Entity, Vector& out) const
 {
 	auto boneBase = Entity->getBoneObj();
 	Vector vBone;
@@ -125,7 +125,7 @@ CAimbot::CAimbot()
 {
 }
 
-void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer> Entity) const
+void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer> &Entity) const
 {
 	if (GetAsyncKeyState(VK_MENU) != 0) {
 		if (Entity->getHP() > 0 && Entity->getTeam() != lp_->getTeam()) {

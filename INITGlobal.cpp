@@ -43,7 +43,7 @@ void initialization(){
 				continue;
 			}
 			
-			LocalPlayer* lp = new LocalPlayer();
+			std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
 			lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
 			g_Aimbot.update(lp, init::client_state);
 			g_Aimbot.frame();
@@ -58,7 +58,7 @@ void espThread()
 {
 	while (true)
 	{
-		LocalPlayer* lp = new LocalPlayer();
+		std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
 		lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
 		g_Visual.update(lp);
 		g_Visual.GlowEsp();

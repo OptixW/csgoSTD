@@ -11,7 +11,7 @@ visual g_Visual;
 int init::client_dll;
 int init::engine_dll;
 int init::client_state;
-void initialization(){
+void initialization() {
 	mem.getProcessID();
 	try {
 		mem.openProcess();
@@ -20,40 +20,37 @@ void initialization(){
 		std::cout << ex;
 		Sleep(10000);
 		exit(0);
-
 	}
-		std::string module_client = "client.dll";
-		std::string module_engine = "engine.dll";
+	std::string module_client = "client.dll";
+	std::string module_engine = "engine.dll";
 
-		init::client_dll = mem.getModuleBase(module_client);
-		init::engine_dll = mem.getModuleBase(module_engine);
-		init::client_state = mem.RPM<int>(init::engine_dll + signatures::dwClientState);
+	init::client_dll = mem.getModuleBase(module_client);
+	init::engine_dll = mem.getModuleBase(module_engine);
+	init::client_state = mem.RPM<int>(init::engine_dll + signatures::dwClientState);
 
-		
-		CAimbot g_Aimbot;
-		
-		std::thread thr(espThread);
-		thr.detach();
-		while (true)
+	CAimbot g_Aimbot;
+
+	std::thread thr(espThread);
+	thr.detach();
+	while (true)
+	{
+		auto game_state = mem.RPM<DWORD>(init::client_state + signatures::dwClientState_State);
+		if (game_state != IN_GAME)
 		{
-			auto game_state = mem.RPM<DWORD>(init::client_state +signatures::dwClientState_State);
-			if (game_state != IN_GAME)
-			{
-				Sleep(1000);
-				continue;
-			}
-			
-			std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
-			lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
-			g_Aimbot.update(lp, init::client_state);
-			g_Aimbot.frame();
-			g_Aimbot.TriggerBot(lp->getEntityByCrosshairID((lp->getCrosshairID())));
-			Sleep(5);
-
+			Sleep(1000);
+			continue;
 		}
-		Sleep(10000);
+
+		std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
+		lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
+		g_Aimbot.update(lp, init::client_state);
+		g_Aimbot.frame();
+		g_Aimbot.TriggerBot(lp->getEntityByCrosshairID((lp->getCrosshairID())));
+		Sleep(5);
 	}
-		
+	Sleep(10000);
+}
+
 void espThread()
 {
 	while (true)
@@ -64,8 +61,4 @@ void espThread()
 		g_Visual.GlowEsp();
 		Sleep(10);
 	}
-	
 }
-
-
-

@@ -6,9 +6,4 @@
 #include "Aimbot.hpp"
 #include "Visual.hpp"
 
-
 void initialization();
-
-
-
-

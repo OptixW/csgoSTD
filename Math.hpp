@@ -53,13 +53,11 @@ public:
 inline void Vector::Init(float ix, float iy, float iz)
 {
 	x = ix; y = iy; z = iz;
-
 }
 //===============================================
 inline Vector::Vector(float X, float Y, float Z)
 {
 	x = X; y = Y; z = Z;
-
 }
 //===============================================
 inline Vector::Vector(void) { }
@@ -76,32 +74,27 @@ inline void VectorClear(Vector& a)
 //===============================================
 inline Vector& Vector::operator=(const Vector& vOther)
 {
-
 	x = vOther.x; y = vOther.y; z = vOther.z;
 	return *this;
 }
 //===============================================
 inline float& Vector::operator[](int i)
 {
-
 	return ((float*)this)[i];
 }
 //===============================================
 inline float Vector::operator[](int i) const
 {
-
 	return ((float*)this)[i];
 }
 //===============================================
 inline bool Vector::operator==(const Vector& src) const
 {
-
 	return (src.x == x) && (src.y == y) && (src.z == z);
 }
 //===============================================
 inline bool Vector::operator!=(const Vector& src) const
 {
-
 	return (src.x != x) || (src.y != y) || (src.z != z);
 }
 //===============================================
@@ -158,7 +151,6 @@ __forceinline Vector& Vector::operator-=(float fl)
 //===============================================
 __forceinline  Vector& Vector::operator/=(float fl)
 {
-	
 	float oofl = 1.0f / fl;
 	x *= oofl;
 	y *= oofl;
@@ -169,7 +161,6 @@ __forceinline  Vector& Vector::operator/=(float fl)
 //===============================================
 __forceinline  Vector& Vector::operator/=(const Vector& v)
 {
-
 	x /= v.x;
 	y /= v.y;
 	z /= v.z;
@@ -193,7 +184,6 @@ inline float Vector::Length(void) const
 //===============================================
 inline float Vector::Length2D(void) const
 {
-
 	float root = 0.0f;
 
 	float sqst = x * x + y * y;
@@ -298,6 +288,3 @@ inline float Vector::Dot(const Vector& vOther) const
 
 	return(a.x * vOther.x + a.y * vOther.y + a.z * vOther.z);
 }
-
-
-

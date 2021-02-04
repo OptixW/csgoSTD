@@ -2,21 +2,10 @@
 #include <iostream>
 #include "INITGlobal.hpp"
 
-
-
-
-
 int main() {
+	std::cout << "FireStorm //2020\n";
 
-    std::cout << "FireStorm //2020\n";
+	initialization();
 
-	
-
-    initialization();
-
-
-
-	Sleep(1*100);
+	Sleep(1 * 100);
 }
-
-

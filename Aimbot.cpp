@@ -1,9 +1,6 @@
 #include "Aimbot.hpp"
 #include <iostream>
 
-
-
-
 void CAimbot::ClampAngles(Vector& angles) const
 {
 	if (angles.y < -180.0f)
@@ -15,10 +12,6 @@ void CAimbot::ClampAngles(Vector& angles) const
 	if (angles.x > 89.0f)
 		angles.x = 89.0f;
 }
-
-
-
-
 
 void CAimbot::calcAngle(Vector& source, Vector& dst, Vector& out) const
 {
@@ -62,16 +55,13 @@ void CAimbot::RCS()//todo
 	}
 }
 
-void CAimbot::update(std::shared_ptr<LocalPlayer> &pl , DWORD cl_state)
+void CAimbot::update(std::shared_ptr<LocalPlayer>& pl, DWORD cl_state)
 {
 	if (pl == nullptr)
 		return;
 	lp_ = pl;
 	cl_state_ = cl_state;
-
 }
-
-
 
 void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working without CreateMove Hooking
 {
@@ -84,7 +74,7 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	iUserCMDSequenceNumberBase = mem.RPM<int>(dwUserCMD + 0x0);
 	int iUserCMDSequenceNumber = 0;
 
-//	mem.WPM<byte>(init::engine_dll + signatures::dwbSendPackets, 0);
+	//	mem.WPM<byte>(init::engine_dll + signatures::dwbSendPackets, 0);
 	while (iUserCMDSequenceNumber != current_sequence_number)
 	{
 		iUserCMDSequenceNumber = mem.readInt(iUserCMDSequenceNumberBase + 0x4);
@@ -94,11 +84,7 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	//
 	//mem.WPM<byte>(init::engine_dll + signatures::dwbSendPackets, 1);
 	//mem.WPM<Vector>(dwUserCMD + 0xC, angles);write your viewAngles
-
 }
-
-
-
 
 void CAimbot::getBonePos(int boneID, const std::shared_ptr<LocalPlayer>& Entity, Vector& out) const
 {
@@ -125,7 +111,7 @@ CAimbot::CAimbot()
 {
 }
 
-void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer> &Entity) const
+void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer>& Entity) const
 {
 	if (GetAsyncKeyState(VK_MENU) != 0) {
 		if (Entity->getHP() > 0 && Entity->getTeam() != lp_->getTeam()) {
@@ -146,5 +132,3 @@ void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer> &Entity) const
 		Sleep(5);
 	}
 }
-
-

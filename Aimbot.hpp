@@ -18,12 +18,10 @@ public:
 	void GetViewAngles(Vector& angles) const;
 	void SetViewAngles(const Vector& angles) const;
 	void SilentSetViewAngles(const Vector& angles) const;
-	void TriggerBot(const std::shared_ptr<LocalPlayer> &Entity) const;
-	void getBonePos(int boneID, const std::shared_ptr<LocalPlayer> &Entity, Vector& out) const;
+	void TriggerBot(const std::shared_ptr<LocalPlayer>& Entity) const;
+	void getBonePos(int boneID, const std::shared_ptr<LocalPlayer>& Entity, Vector& out) const;
 private:
 	DWORD cl_state_;
 	std::shared_ptr<LocalPlayer> lp_;
-}; 
+};
 extern CAimbot g_Aimbot;
-
-

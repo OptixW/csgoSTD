@@ -10,24 +10,19 @@ struct GlowStruct
 	float b = 1.f;
 	float a = 1.f;
 	char pad[16];
-	bool m_bRenderWhenOccluded = true; 
-	bool m_bRenderWhenUnoccluded = false; 
-	bool m_bFullBloomRender = false; 
+	bool m_bRenderWhenOccluded = true;
+	bool m_bRenderWhenUnoccluded = false;
+	bool m_bFullBloomRender = false;
 };
 class visual {
-
 public:
-	
-	 void GlowEsp();
-	 void update(std::shared_ptr<LocalPlayer>& pl);
-	
+
+	void GlowEsp();
+	void update(std::shared_ptr<LocalPlayer>& pl);
 
 private:
-	 void makeGlow(GlowStruct glowstruct, DWORD glowObj, DWORD PlayerGlow, float r, float g, float b, float a);
-	 void updateGlowInfo(std::shared_ptr<LocalPlayer> &Entity);
-	 std::shared_ptr<LocalPlayer> lp_;
-	 bool active_;
-	
-}; 
-
-
+	void makeGlow(GlowStruct glowstruct, DWORD glowObj, DWORD PlayerGlow, float r, float g, float b, float a);
+	void updateGlowInfo(std::shared_ptr<LocalPlayer>& Entity);
+	std::shared_ptr<LocalPlayer> lp_;
+	bool active_;
+};

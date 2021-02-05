@@ -86,6 +86,8 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	//mem.WPM<Vector>(dwUserCMD + 0xC, angles);write your viewAngles
 }
 
+
+
 void CAimbot::getBonePos(int boneID, const std::shared_ptr<LocalPlayer>& Entity, Vector& out) const
 {
 	auto boneBase = Entity->getBoneObj();

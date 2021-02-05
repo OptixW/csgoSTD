@@ -15,6 +15,7 @@ public:
 	void calcAngle(Vector& source, Vector& dst, Vector& out) const;
 	void update(std::shared_ptr<LocalPlayer>& Entity, DWORD cl_state);
 	void frame();
+	std::shared_ptr<LocalPlayer> getBestTarget() const;//todo
 	void GetViewAngles(Vector& angles) const;
 	void SetViewAngles(const Vector& angles) const;
 	void SilentSetViewAngles(const Vector& angles) const;

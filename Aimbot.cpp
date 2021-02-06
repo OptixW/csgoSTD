@@ -32,6 +32,38 @@ void CAimbot::calcAngle(Vector& source, Vector& dst, Vector& out) const
 void CAimbot::frame()
 {
 	RCS();
+	
+}
+void CAimbot::getBestTarget(smart_loc& s_Entity) const
+{
+	float distance = 9999.0f;
+	smart_loc Entity;
+	Vector EntityPos;
+	float temp;
+	for (int i = 1; i < 16; i++)
+	{
+		Entity = smart_loc(new LocalPlayer);
+		Entity->SetBase(mem.RPM<int>(init::client_dll + signatures::dwEntityList + i * 0x10));
+		if (!Entity->GetBase())
+			continue;
+
+		if (Entity->getHP() > 0 && (Entity->getTeam() == 2 || Entity->getTeam() == 3))
+		{
+			Vector MyPos = lp_->getPos();
+			EntityPos = Entity->getPos();
+			temp = distnt(EntityPos, MyPos);
+			if (temp < distance)
+			{
+				distance = temp;
+				s_Entity = Entity;
+			}
+		}
+	}
+}
+
+float CAimbot::distnt(Vector EntityPos, Vector MyPos) const
+{
+	return sqrt(pow((EntityPos.x - MyPos.x), 2) + pow((EntityPos.y - MyPos.y), 2) + pow((EntityPos.z - MyPos.z), 2));
 }
 
 void CAimbot::RCS()//todo
@@ -56,7 +88,7 @@ void CAimbot::RCS()//todo
 	}
 }
 
-void CAimbot::update(std::shared_ptr<LocalPlayer>& pl, DWORD cl_state)
+void CAimbot::update(smart_loc& pl, DWORD cl_state)
 {
 	if (pl == nullptr)
 		return;
@@ -87,7 +119,7 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	//mem.WPM<Vector>(dwUserCMD + 0xC, angles);write your viewAngles
 }
 
-void CAimbot::getBonePos(int boneID, const std::shared_ptr<LocalPlayer>& Entity, Vector& out) const
+void CAimbot::getBonePos(int boneID, const smart_loc& Entity, Vector& out) const
 {
 	auto boneBase = Entity->getBoneObj();
 	Vector vBone;
@@ -102,7 +134,7 @@ void CAimbot::GetViewAngles(Vector& angles) const
 	angles = mem.RPM<Vector>(init::client_state + signatures::dwClientState_ViewAngles);
 }
 
-int CAimbot::nearestBone(const std::shared_ptr<LocalPlayer>& Entity) const
+int CAimbot::nearestBone(const smart_loc& Entity) const
 {
 	Vector pos = lp_->getPos() + lp_->getEyeView();
 	Vector out;
@@ -138,7 +170,7 @@ CAimbot::CAimbot()
 {
 }
 
-void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer>& Entity) const
+void CAimbot::TriggerBot(const smart_loc& Entity) const
 {
 	if (GetAsyncKeyState(VK_MENU) != 0) {
 		if (Entity->getHP() > 0 && Entity->getTeam() != lp_->getTeam()) {

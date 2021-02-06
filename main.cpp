@@ -3,7 +3,7 @@
 #include "INITGlobal.hpp"
 
 int main() {
-	std::cout << "FireStorm //2020\n";
+	std::cout << "FireStorm //2021\n";
 
 	initialization();
 

@@ -62,6 +62,31 @@ int Memory::getModuleBase(std::string& module_name) const {
 	return -1;
 }
 
+int Memory::getModuleSize(std::string& module_name) const
+{
+	MODULEENTRY32 mod;
+
+	auto snap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, process_id_);
+	mod.dwSize = sizeof(mod);
+	if (Module32First(snap, &mod))
+	{
+		if (module_name == mod.szModule)
+		{
+			CloseHandle(snap);
+			return (int)mod.modBaseSize;
+		}
+	}
+	while (Module32Next(snap, &mod))
+	{
+		if (module_name == mod.szModule)
+		{
+			CloseHandle(snap);
+			return int(mod.modBaseSize);
+		}
+	}
+	return -1;
+}
+
 int Memory::readInt(int address) const {
 	return mem.RPM<int>(address);
 }

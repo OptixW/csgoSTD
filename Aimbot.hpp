@@ -5,6 +5,7 @@
 #include "IBaseGame.hpp"
 #include <algorithm>
 #include <memory>
+
 namespace BoneEnum {
 	enum bone_t
 	{
@@ -14,18 +15,20 @@ namespace BoneEnum {
 	};
 	static const bone_t bones[] = { bone_head, bone_chest, bone_neck };
 }
-
+using smart_loc = std::shared_ptr<LocalPlayer>;
 class CAimbot
 {
 public:
+
 	CAimbot();
 	void ClampAngles(Vector& angles) const;
 	void RCS();
 	void calcAngle(Vector& source, Vector& dst, Vector& out) const;
 	void update(std::shared_ptr<LocalPlayer>& Entity, DWORD cl_state);
 	void frame();
-	std::shared_ptr<LocalPlayer> getBestTarget() const;//todo
+	void getBestTarget(smart_loc& s_Entity) const;//todo
 	int nearestBone(const std::shared_ptr < LocalPlayer>& Entity) const;
+	float distnt(Vector EntityPos, Vector MyPos) const;
 	void GetViewAngles(Vector& angles) const;
 	void SetViewAngles(const Vector& angles) const;
 	void SilentSetViewAngles(const Vector& angles) const;

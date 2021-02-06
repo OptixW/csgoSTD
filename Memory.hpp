@@ -17,6 +17,7 @@ public:
 	void getProcessID();
 	void openProcess();
 	int getModuleBase(std::string& module_name) const;
+	int getModuleSize(std::string& module_name) const;
 	int readInt(int address) const;
 	float readFloat(int address) const;
 	double readDouble(int address) const;

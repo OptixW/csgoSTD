@@ -1,7 +1,7 @@
 #pragma once
 #include <cstddef>
 namespace netvars {
-	constexpr ::std::ptrdiff_t cs_gamerules_data = 0x0;
+	constexpr::std::ptrdiff_t cs_gamerules_data = 0x0;
 	constexpr ::std::ptrdiff_t m_ArmorValue = 0xB378;
 	constexpr ::std::ptrdiff_t m_Collision = 0x320;
 	constexpr ::std::ptrdiff_t m_CollisionGroup = 0x474;

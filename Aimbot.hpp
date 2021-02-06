@@ -1,11 +1,20 @@
 #pragma once
 #include "Local.hpp"
+
 #include "Math.hpp"
 #include "IBaseGame.hpp"
+#include <algorithm>
 #include <memory>
-constexpr int bone_head = 8;
-constexpr int bone_chest = 6;
-constexpr int bone_neck = 7;
+namespace BoneEnum {
+	enum bone_t
+	{
+		bone_head = 8,
+		bone_chest = 6,
+		bone_neck = 7
+	};
+	static const bone_t bones[] = { bone_head, bone_chest, bone_neck };
+}
+
 class CAimbot
 {
 public:
@@ -16,6 +25,7 @@ public:
 	void update(std::shared_ptr<LocalPlayer>& Entity, DWORD cl_state);
 	void frame();
 	std::shared_ptr<LocalPlayer> getBestTarget() const;//todo
+	int nearestBone(const std::shared_ptr < LocalPlayer>& Entity) const;
 	void GetViewAngles(Vector& angles) const;
 	void SetViewAngles(const Vector& angles) const;
 	void SilentSetViewAngles(const Vector& angles) const;

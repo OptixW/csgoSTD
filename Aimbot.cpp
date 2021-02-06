@@ -1,5 +1,6 @@
 #include "Aimbot.hpp"
 #include <iostream>
+#include <vector>
 
 void CAimbot::ClampAngles(Vector& angles) const
 {
@@ -86,8 +87,6 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	//mem.WPM<Vector>(dwUserCMD + 0xC, angles);write your viewAngles
 }
 
-
-
 void CAimbot::getBonePos(int boneID, const std::shared_ptr<LocalPlayer>& Entity, Vector& out) const
 {
 	auto boneBase = Entity->getBoneObj();
@@ -101,6 +100,32 @@ void CAimbot::getBonePos(int boneID, const std::shared_ptr<LocalPlayer>& Entity,
 void CAimbot::GetViewAngles(Vector& angles) const
 {
 	angles = mem.RPM<Vector>(init::client_state + signatures::dwClientState_ViewAngles);
+}
+
+int CAimbot::nearestBone(const std::shared_ptr<LocalPlayer>& Entity) const
+{
+	Vector pos = lp_->getPos() + lp_->getEyeView();
+	Vector out;
+	Vector Entity_pos = Entity->getPos();
+	float delta_ = 9999.0f;
+	Vector ViewAngles;
+	Vector res;
+	int bone_res = 8;
+	GetViewAngles(ViewAngles);
+	for (auto i = 0; i < sizeof(BoneEnum::bones); i++)
+	{
+		getBonePos(BoneEnum::bones[i], Entity, out);
+		calcAngle(pos, out, out);
+		res = ViewAngles - out;
+		ClampAngles(res);
+
+		if (res.Length2DSqr() < delta_)
+		{
+			delta_ = res.Length2DSqr();
+			bone_res = BoneEnum::bones[i];
+		}
+	}
+	return bone_res;
 }
 
 void CAimbot::SetViewAngles(const Vector& angles) const
@@ -122,9 +147,10 @@ void CAimbot::TriggerBot(const std::shared_ptr<LocalPlayer>& Entity) const
 					return;
 				Vector source = lp_->getPos() + lp_->getEyeView();
 				Vector target;
-				getBonePos(bone_neck, Entity, target);
+				Vector smoothed_angle;
+				getBonePos(nearestBone(Entity), Entity, target);
 				calcAngle(source, target, target);
-				target -= lp_->getPunchAngle() * 2.0f;
+				ClampAngles(target);
 				SetViewAngles(target);
 			}(lp_->Pistol());
 			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);

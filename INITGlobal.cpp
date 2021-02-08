@@ -50,7 +50,9 @@ void initialization() {
 			Sleep(1000);
 			continue;
 		}
+		
 		lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
+
 		g_Aimbot.update(lp, init::client_state);
 		g_Aimbot.frame();
 		g_Aimbot.TriggerBot(lp->getEntityByCrosshairID((lp->getCrosshairID())));
@@ -62,11 +64,18 @@ void initialization() {
 void espThread()
 {
 	std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
+	int game_state;
 	while (true)
 	{
+		game_state = mem.RPM<DWORD>(init::client_state + signatures::dwClientState_State);
+		if (game_state != IN_GAME)
+		{
+			Sleep(1000);
+			continue;
+		}
 		lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
 		g_Visual.update(lp);
 		g_Visual.GlowEsp();
-		Sleep(10);
+		Sleep(5);
 	}
 }

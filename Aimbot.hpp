@@ -24,18 +24,18 @@ public:
 	void ClampAngles(Vector& angles) const;
 	void RCS();
 	void calcAngle(Vector& source, Vector& dst, Vector& out) const;
-	void update(std::shared_ptr<LocalPlayer>& Entity, DWORD cl_state);
+	void update(smart_loc& Entity, DWORD cl_state);
 	void frame();
 	void getBestTarget(smart_loc& s_Entity) const;//todo
-	int nearestBone(const std::shared_ptr < LocalPlayer>& Entity) const;
+	int nearestBone(const smart_loc& Entity) const;
 	float distnt(Vector EntityPos, Vector MyPos) const;
 	void GetViewAngles(Vector& angles) const;
 	void SetViewAngles(const Vector& angles) const;
 	void SilentSetViewAngles(const Vector& angles) const;
-	void TriggerBot(const std::shared_ptr<LocalPlayer>& Entity) const;
-	void getBonePos(int boneID, const std::shared_ptr<LocalPlayer>& Entity, Vector& out) const;
+	void TriggerBot(const smart_loc& Entity) const;
+	void getBonePos(int boneID, const smart_loc& Entity, Vector& out) const;
 private:
 	DWORD cl_state_;
-	std::shared_ptr<LocalPlayer> lp_;
+	smart_loc lp_;
 };
 extern CAimbot g_Aimbot;

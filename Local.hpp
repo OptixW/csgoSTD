@@ -8,12 +8,14 @@ class LocalPlayer {
 public:
 	int getWeaponId() const;
 	bool Pistol() const;
+	bool farmGun() const;
 	size_t getHP() const;
 	size_t getTeam() const;
 	size_t getCrosshairID() const;
 	size_t getShotsFireID() const;
 	Vector getPunchAngle() const;
 	Vector getPos() const;
+	bool isDormant() const;
 	DWORD getInput() const;
 	Vector getEyeView() const; // only for localplayer
 	std::shared_ptr<LocalPlayer> getEntityByCrosshairID(int crosshairID) const;

@@ -14,6 +14,11 @@ bool LocalPlayer::Pistol() const
 	return IsPistol(getWeaponId());
 }
 
+bool LocalPlayer::farmGun() const
+{
+	return isFurmGun(getWeaponId());
+}
+
 size_t LocalPlayer::getHP() const {
 	ptrdiff_t offset = base_ + netvars::m_iHealth;
 	return mem.readInt(offset);
@@ -43,6 +48,11 @@ Vector LocalPlayer::getPunchAngle() const
 Vector LocalPlayer::getPos() const
 {
 	return mem.RPM<Vector>(base_ + netvars::m_vecOrigin);
+}
+
+bool LocalPlayer::isDormant() const
+{
+	return mem.RPM<bool>(base_ + signatures::m_bDormant);
 }
 
 DWORD LocalPlayer::getInput() const

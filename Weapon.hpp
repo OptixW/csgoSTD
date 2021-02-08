@@ -65,3 +65,18 @@ inline bool IsPistol(int id)
 		return false;
 	}
 }
+inline bool isFurmGun(int id)
+{
+	switch (id)
+	{
+	case WEAPON_MAC10:
+	case WEAPON_MP7:
+	case WEAPON_UMP45:
+	case WEAPON_P90:
+	case WEAPON_BIZON:
+	case WEAPON_MP9:
+		return true;
+	default:
+		return false;
+	}
+}

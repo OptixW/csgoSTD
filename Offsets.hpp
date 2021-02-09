@@ -103,7 +103,7 @@ namespace signatures {
 	constexpr ::std::ptrdiff_t dwClientState_PlayerInfo = 0x52C0;
 	constexpr ::std::ptrdiff_t dwClientState_State = 0x108;
 	constexpr ::std::ptrdiff_t dwClientState_ViewAngles = 0x4D90;
-	constexpr ::std::ptrdiff_t dwEntityList = 0x4DA2F54;
+	constexpr ::std::ptrdiff_t dwEntityList = 0x4DA2F44;
 	constexpr ::std::ptrdiff_t dwForceAttack = 0x31D44E4;
 	constexpr ::std::ptrdiff_t dwForceAttack2 = 0x31D44F0;
 	constexpr ::std::ptrdiff_t dwForceBackward = 0x31D449C;
@@ -115,7 +115,7 @@ namespace signatures {
 	constexpr ::std::ptrdiff_t dwGameRulesProxy = 0x52C019C;
 	constexpr ::std::ptrdiff_t dwGetAllClasses = 0xDB2F8C;
 	constexpr ::std::ptrdiff_t dwGlobalVars = 0x58ECE8;
-	constexpr ::std::ptrdiff_t dwGlowObjectManager = 0x52EB558;
+	constexpr ::std::ptrdiff_t dwGlowObjectManager = 0x52EB550;
 	constexpr ::std::ptrdiff_t dwInput = 0x51F4538;
 	constexpr ::std::ptrdiff_t dwInterfaceLinkList = 0x9457A4;
 	constexpr ::std::ptrdiff_t dwLocalPlayer = 0xD8B2BC;

@@ -174,7 +174,9 @@ void CAimbot::TriggerBot(const smart_loc& Entity) const
 {
 	if (GetAsyncKeyState(VK_MENU) != 0) {
 		if (Entity->getHP() > 0 && Entity->getTeam() != lp_->getTeam()) {
-			[&]() {
+			[&](bool p) {
+				if (!p)
+					return;
 				Vector source = lp_->getPos() + lp_->getEyeView();
 				Vector target;
 				Vector smoothed_angle;
@@ -183,7 +185,7 @@ void CAimbot::TriggerBot(const smart_loc& Entity) const
 				target -= lp_->getPunchAngle() * 1.7f;
 				ClampAngles(target);
 				SetViewAngles(target);
-			}();
+			}(lp_->Pistol());
 			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
 			Sleep(5);
 			mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);

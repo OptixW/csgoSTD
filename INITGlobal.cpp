@@ -50,7 +50,7 @@ void initialization() {
 			Sleep(1000);
 			continue;
 		}
-		
+
 		lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
 
 		g_Aimbot.update(lp, init::client_state);

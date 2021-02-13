@@ -10,10 +10,11 @@ namespace BoneEnum {
 	enum bone_t
 	{
 		bone_head = 8,
-		bone_chest = 6,
-		bone_neck = 7
+		bone_neck = 7,
+		bone_chest = 6
+		//7 - NECK ; 6 CHEST
 	};
-	static const bone_t bones[] = { bone_head, bone_chest, bone_neck };
+	static const bone_t bones[] = { bone_head, bone_neck, bone_chest };
 }
 using smart_loc = std::shared_ptr<LocalPlayer>;
 class CAimbot
@@ -26,7 +27,7 @@ public:
 	void calcAngle(Vector& source, Vector& dst, Vector& out) const;
 	void update(smart_loc& Entity, DWORD cl_state);
 	void frame();
-	void getBestTarget(smart_loc& s_Entity) const;//todo
+	void getBestTarget();
 	int nearestBone(const smart_loc& Entity) const;
 	float distnt(Vector EntityPos, Vector MyPos) const;
 	void GetViewAngles(Vector& angles) const;
@@ -34,7 +35,13 @@ public:
 	void SilentSetViewAngles(const Vector& angles) const;
 	void TriggerBot(const smart_loc& Entity) const;
 	void getBonePos(int boneID, const smart_loc& Entity, Vector& out) const;
+	float GetFOV(const Vector& viewangles, const Vector& vSrc, const Vector& vEnd) const;
+	void smoothAngle(const Vector& source, const Vector& dist, float smooth_factor, Vector& out) const;
+	void MakeVector(const Vector& vIn, Vector& vOut) const;
+	void VelocityCompansate(Vector& EntPos);
 private:
+	float fov_;
+	int BestIndex_;
 	DWORD cl_state_;
 	smart_loc lp_;
 };

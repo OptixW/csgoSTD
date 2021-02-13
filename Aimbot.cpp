@@ -1,7 +1,6 @@
 #include "Aimbot.hpp"
 #include <iostream>
 #include <vector>
-
 void CAimbot::ClampAngles(Vector& angles) const
 {
 	if (angles.y < -180.0f)
@@ -28,34 +27,71 @@ void CAimbot::calcAngle(Vector& source, Vector& dst, Vector& out) const
 	if (delta.x >= 0.0)
 		out.y += 180.0f;
 }
+void CAimbot::VelocityCompansate(Vector& EntPos)
+{
+	float comp = 0.13f;
+	EntPos += mem.readFloat(lp_->GetBase() + netvars::m_vecVelocity) * comp;
+}
 
 void CAimbot::frame()
 {
-	RCS();
-	
-}
-void CAimbot::getBestTarget(smart_loc& s_Entity) const
-{
-	float distance = 9999.0f;
-	smart_loc Entity;
-	Vector EntityPos;
-	float temp;
-	for (int i = 1; i < 16; i++)
+	while (GetAsyncKeyState(20) != 0)
 	{
-		Entity = smart_loc(new LocalPlayer);
+		smart_loc Entity(new LocalPlayer());
+
+		Vector myView;
+		Vector out;
+		Vector out2;
+		getBestTarget(out);
+		Entity->SetBase(mem.RPM<int>(init::client_dll + signatures::dwEntityList + BestIndex_ * 0x10));
+		while (Entity->getHP() > 0) {
+			{
+				auto MyPos = lp_->getPos() + lp_->getEyeView();
+				auto EntPos = Entity->getPos();
+				getBonePos(nearestBone(Entity), Entity, out2);
+				calcAngle(MyPos, out2, out2);
+				Vector Eye = lp_->getEyeView();
+				out2 -= lp_->getPunchAngle() * 2.0f;
+				ClampAngles(out2);
+				SetViewAngles(out2);
+				mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+				Sleep(10);
+				mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+				if (GetAsyncKeyState(0x18) != 0)
+					break;
+			}
+		}
+	}
+}
+void CAimbot::getBestTarget()
+{
+	float max_fov = 9999.0f;
+	Vector EntityPos;
+	float temp_fov = 0;
+	Vector myViewAngles;
+	smart_loc Entity;
+	Vector source;
+	Vector target;
+	for (int i = 1; i < 32; ++i)
+	{
+		smart_loc Entity(new LocalPlayer());
 		Entity->SetBase(mem.RPM<int>(init::client_dll + signatures::dwEntityList + i * 0x10));
+
 		if (!Entity->GetBase())
 			continue;
-
-		if (Entity->getHP() > 0 && (Entity->getTeam() == 2 || Entity->getTeam() == 3))
+		if (Entity->getHP() > 0 && Entity->getTeam() != lp_->getTeam())
 		{
-			Vector MyPos = lp_->getPos();
-			EntityPos = Entity->getPos();
-			temp = distnt(EntityPos, MyPos);
-			if (temp < distance)
+			GetViewAngles(myViewAngles);
+			source = lp_->getPos() + lp_->getEyeView();
+			getBonePos(nearestBone(Entity), Entity, target);
+			calcAngle(source, target, target);
+			Vector Eye = lp_->getEyeView();
+			temp_fov = GetFOV(myViewAngles, Eye, target);
+			if (temp_fov < max_fov)
 			{
-				distance = temp;
-				s_Entity = Entity;
+				max_fov = temp_fov;
+				BestIndex_ = i;
+				
 			}
 		}
 	}
@@ -71,7 +107,7 @@ void CAimbot::RCS()//todo
 	static Vector old;
 	Vector mView;
 	Vector angle;
-	if (lp_->getShotsFireID() > 1 && GetAsyncKeyState(0x01))
+	//if (lp_->getShotsFireID() > 1 && GetAsyncKeyState(0x01))
 	{
 		Vector m_PunchAngle = lp_->getPunchAngle();
 		GetViewAngles(mView);
@@ -83,9 +119,8 @@ void CAimbot::RCS()//todo
 		Sleep(10);
 		old = m_PunchAngle;
 	}
-	else {
-		old.Zero();
-	}
+	//	else {
+	old.Zero();
 }
 
 void CAimbot::update(smart_loc& pl, DWORD cl_state)
@@ -127,6 +162,28 @@ void CAimbot::getBonePos(int boneID, const smart_loc& Entity, Vector& out) const
 	vBone.y = mem.RPM<float>(boneBase + 0x30 * boneID + 0x1C);
 	vBone.z = mem.RPM<float>(boneBase + 0x30 * boneID + 0x2C);
 	out = vBone;
+}
+
+float CAimbot::GetFOV(const Vector& viewangles, const Vector& vSrc, const Vector& vEnd) const
+{
+	Vector vAng, vAim, vAngles;
+	vAngles = viewangles;
+	auto vSrc_ = vSrc;
+	auto vEnd_ = vEnd;
+	calcAngle(vSrc_, vEnd_, vAng);
+	MakeVector(vAngles, vAim);
+	MakeVector(vAng, vAng);
+	return RAD2DEG(acos(vAim.Dot(vAng)) / vAim.LengthSqr());
+}
+
+void CAimbot::MakeVector(const Vector& vIn, Vector& vOut) const
+{
+	auto pitch = DEG2RAD(vIn.x);
+	auto yaw = DEG2RAD(vIn.y);
+	auto temp = cos(pitch);
+	vOut.x = -temp * -cos(yaw);
+	vOut.y = sin(yaw) * temp;
+	vOut.z = -sin(pitch);
 }
 
 void CAimbot::GetViewAngles(Vector& angles) const

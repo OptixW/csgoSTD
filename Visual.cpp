@@ -35,7 +35,6 @@ void visual::GlowEsp()
 	{
 		lp->SetBase(mem.RPM<size_t>(init::client_dll + signatures::dwEntityList + i * 0x10));
 		updateGlowInfo(lp);
-		
 	}
 }
 

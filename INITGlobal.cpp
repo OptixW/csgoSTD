@@ -12,6 +12,7 @@ int init::client_dll;
 int init::engine_dll;
 int init::client_state;
 constexpr int mod_cl_size = 0x5487000;
+
 void initialization() {
 	mem.getProcessID();
 	try {
@@ -31,6 +32,7 @@ void initialization() {
 		Sleep(1000 * 5);
 		exit(0);
 	}
+
 	init::client_dll = mem.getModuleBase(module_client);
 	init::engine_dll = mem.getModuleBase(module_engine);
 	init::client_state = mem.RPM<int>(init::engine_dll + signatures::dwClientState);

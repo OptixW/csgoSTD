@@ -9,6 +9,7 @@ public:
 	int getWeaponId() const;
 	bool Pistol() const;
 	bool farmGun() const;
+	bool scopeWeapon() const;
 	size_t getHP() const;
 	size_t getTeam() const;
 	size_t getCrosshairID() const;

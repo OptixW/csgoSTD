@@ -19,6 +19,11 @@ bool LocalPlayer::farmGun() const
 	return isFurmGun(getWeaponId());
 }
 
+bool LocalPlayer::scopeWeapon() const
+{
+	return IsScope(getWeaponId());
+}
+
 size_t LocalPlayer::getHP() const {
 	ptrdiff_t offset = base_ + netvars::m_iHealth;
 	return mem.readInt(offset);

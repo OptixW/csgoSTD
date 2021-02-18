@@ -46,6 +46,18 @@ enum WeaponId_t
 	WEAPON_CZ75 = 63,
 	WEAPON_REVOLVER = 262208,
 };
+
+inline bool IsScope(int id)
+{
+	switch (id)
+	{
+	case WEAPON_AWP:
+	case WEAPON_SCOUT:
+		return true;
+	default: return false;
+	}
+}
+
 inline bool IsPistol(int id)
 {
 	switch (id)

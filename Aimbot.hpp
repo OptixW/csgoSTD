@@ -40,6 +40,7 @@ public:
 	void smoothAngle(Vector& currentAngle, float fSmoothPercentage, Vector& angles) const;
 	void MakeVector(const Vector& vIn, Vector& vOut) const;
 	void VelocityCompansate(Vector& EntPos);
+	void Shoot() const;
 private:
 	float fov_;
 	int BestIndex_;

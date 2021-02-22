@@ -33,9 +33,17 @@ void CAimbot::VelocityCompansate(Vector& EntPos)
 	EntPos += mem.readFloat(lp_->GetBase() + netvars::m_vecVelocity) * comp;
 }
 
+void CAimbot::Shoot() const
+{
+	mem.WPM<int>(init::client_dll + signatures::dwForceAttack, 5);
+	Sleep(60);
+	mem.WPM<int>(init::client_dll + signatures::dwForceAttack, 4);
+}
+
 void CAimbot::frame()
 {
-
+	RCS();
+	/*
 	if (GetAsyncKeyState(0x01) & 0x8000)
 	{
 		{
@@ -83,6 +91,7 @@ void CAimbot::frame()
 			Sleep(10);
 		}
 	}
+	*/
 }
 
 void CAimbot::getBestTarget()
@@ -124,25 +133,40 @@ float CAimbot::distnt(Vector EntityPos, Vector MyPos) const
 
 void CAimbot::RCS()//todo
 {
-	
+
 	static Vector old;
-	Vector mView;
-	Vector angle;
-	if (lp_->getShotsFireID() > 1 && GetAsyncKeyState(0x01))
+	static Vector start_;
+	static bool spray_ = false;
+	static Vector mView;
+	 Vector angle;
+	 Vector m_PunchAngle;
+	if (GetAsyncKeyState(0x01) & 0x8000)
 	{
-		BestIndex_ = -1;
-		Vector m_PunchAngle = lp_->getPunchAngle();
-		GetViewAngles(mView);
-		mView += old;
-		m_PunchAngle *= 1.7f;
-		angle = mView - m_PunchAngle;
-		ClampAngles(angle);
-		SetViewAngles(angle);
-		Sleep(10);
-		old = m_PunchAngle;
-	}
-	else {
-		old.Zero();
+		if (lp_->getShotsFireID() > 1)
+		{
+		
+			Vector m_PunchAngle = lp_->getPunchAngle();
+			GetViewAngles(mView);
+			start_ = mView;
+			mView += old;
+			
+			start_ = mView + m_PunchAngle;
+			m_PunchAngle *= 2.0f;
+			angle = mView - m_PunchAngle;
+			start_ = mView + m_PunchAngle;
+			ClampAngles(angle);
+			SetViewAngles(angle);
+			old = m_PunchAngle;
+			Sleep(5);
+			
+		}
+		else
+		{
+		//	SetViewAngles(start_);
+			old.Zero();
+		}
+	
+		
 	}
 }
 
@@ -208,7 +232,7 @@ void CAimbot::smoothAngle(Vector& currentAngle, float fSmoothPercentage, Vector&
 
 	float target_pitch = angles.y;
 	float view_pitch = viewangles.y;
-	float smooth_factor = 120.f;
+	float smooth_factor = 180.f;
 
 	if (angles.y < 0) target_pitch = 360.f + angles.y;
 	if (viewangles.y < 0) view_pitch = 360.f + viewangles.y;
@@ -287,10 +311,11 @@ int CAimbot::nearestBone(const smart_loc& Entity) const
 		calcAngle(pos, out, out);
 		res = ViewAngles - out;
 		ClampAngles(res);
+		//DEG2RAD(res);
 
-		if (res.Length2DSqr() < delta_)
+		if (res.Length2D() < delta_)
 		{
-			delta_ = res.Length2DSqr();
+			delta_ = res.Length2D();
 			bone_res = BoneEnum::bones[i];
 		}
 	}
@@ -320,14 +345,12 @@ void CAimbot::TriggerBot(const smart_loc& Entity) const
 				Vector smoothed_angle;
 				getBonePos(nearestBone(Entity), Entity, target);
 				calcAngle(source, target, target);
-				target -= lp_->getPunchAngle() * 1.94f;
 				smoothAngle(myView, 25, target);
 				SetViewAngles(target);
 			}(lp_->Pistol());
-			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
 			Sleep(5);
-			mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+		//	std::cout << lp_->getWeaponId() << std::endl;
+			Shoot();
 		}
-		Sleep(1);
 	}
 }

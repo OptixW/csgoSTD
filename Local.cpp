@@ -24,6 +24,12 @@ bool LocalPlayer::scopeWeapon() const
 	return IsScope(getWeaponId());
 }
 
+bool LocalPlayer::isJump() const
+{
+	int res = mem.readInt(base_ + netvars::m_fFlags);
+	return res == 256 ? true : false;
+}
+
 size_t LocalPlayer::getHP() const {
 	ptrdiff_t offset = base_ + netvars::m_iHealth;
 	return mem.readInt(offset);

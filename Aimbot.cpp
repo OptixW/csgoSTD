@@ -43,6 +43,18 @@ void CAimbot::Shoot() const
 void CAimbot::frame()
 {
 	RCS();
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	{
+
+		if (!lp_->isJump())
+		{
+			mem.WPM<int>(init::client_dll + signatures::dwForceJump, 5);
+		}
+		else
+		{
+			mem.WPM<int>(init::client_dll + signatures::dwForceJump, 4);
+		}
+	}
 	/*
 	if (GetAsyncKeyState(0x01) & 0x8000)
 	{
@@ -70,15 +82,15 @@ void CAimbot::frame()
 			GetViewAngles(myView);
 			fov = GetFOV(myView, MyPos, EntPos);
 
-			if (fov > 5)
-			{
-				return;
-			}
-			else
-			{
+			//if (fov > 5)
+			//{
+		//		return;
+		//	}
+		//	else
+			//{
 				if (Entity_->getHP() > 0)
 				{
-					smoothAngle(myView, 15, out2);
+				//	smoothAngle(myView, 15, out2);
 					SetViewAngles(out2);
 				}
 				else
@@ -86,7 +98,7 @@ void CAimbot::frame()
 					BestIndex_ = -1;
 					return;
 				}
-			}
+		//	}
 
 			Sleep(10);
 		}

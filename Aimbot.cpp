@@ -43,9 +43,9 @@ void CAimbot::Shoot() const
 void CAimbot::frame()
 {
 	RCS();
+
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
-
 		if (!lp_->isJump())
 		{
 			mem.WPM<int>(init::client_dll + signatures::dwForceJump, 5);
@@ -55,7 +55,7 @@ void CAimbot::frame()
 			mem.WPM<int>(init::client_dll + signatures::dwForceJump, 4);
 		}
 	}
-	/*
+
 	if (GetAsyncKeyState(0x01) & 0x8000)
 	{
 		{
@@ -68,29 +68,20 @@ void CAimbot::frame()
 			Vector myView;
 			Vector out;
 			Vector out2;
-			float fov = 5;
 			getBestTarget();
 			Entity_->SetBase(mem.RPM<int>(init::client_dll + signatures::dwEntityList + BestIndex_ * 0x10));
-
-			auto MyPos = lp_->getPos() + lp_->getEyeView();
-			auto EntPos = Entity_->getPos();
-			getBonePos(nearestBone(Entity_), Entity_, out2);
-			calcAngle(MyPos, out2, out2);
-			out2 -= lp_->getPunchAngle() * 2.0f;
-			ClampAngles(out2);
-
-			GetViewAngles(myView);
-			fov = GetFOV(myView, MyPos, EntPos);
-
-			//if (fov > 5)
-			//{
-		//		return;
-		//	}
-		//	else
-			//{
+			if (DynamicFov(Entity_) < 4.0)
+			{
+				auto MyPos = lp_->getPos() + lp_->getEyeView();
+				auto EntPos = Entity_->getPos();
+				getBonePos(nearestBone(Entity_), Entity_, out2);
+				calcAngle(MyPos, out2, out2);
+				out2 -= lp_->getPunchAngle() * 2.0f;
+				ClampAngles(out2);
+				GetViewAngles(myView);
 				if (Entity_->getHP() > 0)
 				{
-				//	smoothAngle(myView, 15, out2);
+					smoothAngle(myView, 25, out2);
 					SetViewAngles(out2);
 				}
 				else
@@ -98,12 +89,14 @@ void CAimbot::frame()
 					BestIndex_ = -1;
 					return;
 				}
-		//	}
+			}
+			else
+				return;
+			
 
 			Sleep(10);
 		}
 	}
-	*/
 }
 
 void CAimbot::getBestTarget()
@@ -145,23 +138,21 @@ float CAimbot::distnt(Vector EntityPos, Vector MyPos) const
 
 void CAimbot::RCS()//todo
 {
-
 	static Vector old;
 	static Vector start_;
 	static bool spray_ = false;
 	static Vector mView;
-	 Vector angle;
-	 Vector m_PunchAngle;
+	Vector angle;
+	Vector m_PunchAngle;
 	if (GetAsyncKeyState(0x01) & 0x8000)
 	{
 		if (lp_->getShotsFireID() > 1)
 		{
-		
 			Vector m_PunchAngle = lp_->getPunchAngle();
 			GetViewAngles(mView);
 			start_ = mView;
 			mView += old;
-			
+
 			start_ = mView + m_PunchAngle;
 			m_PunchAngle *= 2.0f;
 			angle = mView - m_PunchAngle;
@@ -169,16 +160,12 @@ void CAimbot::RCS()//todo
 			ClampAngles(angle);
 			SetViewAngles(angle);
 			old = m_PunchAngle;
-			Sleep(5);
-			
 		}
 		else
 		{
-		//	SetViewAngles(start_);
+			//	SetViewAngles(start_);
 			old.Zero();
 		}
-	
-		
 	}
 }
 
@@ -232,6 +219,7 @@ float CAimbot::GetFOV(const Vector& viewangles, const Vector& vSrc, const Vector
 	calcAngle(vSrc_, vEnd_, vAng);
 	MakeVector(vAngles, vAim);
 	MakeVector(vAng, vAng);
+
 	return RAD2DEG(acos(vAim.Dot(vAng)) / vAim.LengthSqr());
 }
 
@@ -244,7 +232,7 @@ void CAimbot::smoothAngle(Vector& currentAngle, float fSmoothPercentage, Vector&
 
 	float target_pitch = angles.y;
 	float view_pitch = viewangles.y;
-	float smooth_factor = 180.f;
+	float smooth_factor = 100.f;
 
 	if (angles.y < 0) target_pitch = 360.f + angles.y;
 	if (viewangles.y < 0) view_pitch = 360.f + viewangles.y;
@@ -274,22 +262,28 @@ void CAimbot::smoothAngle(Vector& currentAngle, float fSmoothPercentage, Vector&
 	ClampAngles(angles);
 }
 
-float CAimbot::DynamicFov(smart_loc Entity) const //my brains is not working, have some lags. Make it next time
+float CAimbot::DynamicFov(const smart_loc& Entity) const //today my brain works fine! so, aimbot too works fine =)
 {
-	float fRealDistance, fPlayerDistance, fYawDegreeDifference;
-
-	Vector MyView;
+	float fPlayerDistance, fYawDegreeDifference;
+	Vector MyView = {};
 	GetViewAngles(MyView);
-	Vector vTargetAngles;
-	Vector myPos = lp_->getPos();
-	Vector EntityPos = lp_->getPos();
+	Vector vTargetAngles = {};
+	Vector myPos = lp_->getPos() + lp_->getEyeView();
+	Vector EntityPos = {};
+	getBonePos(7, Entity, EntityPos);
 	calcAngle(myPos, EntityPos, vTargetAngles);
-	fYawDegreeDifference = sin(MyView.x - vTargetAngles.x);
-	fYawDegreeDifference = fabs(fYawDegreeDifference);
-	std::cout << fYawDegreeDifference << std::endl;
+	fPlayerDistance = EntityPos.Dot(myPos);
+	auto AngleDifference_ = AngleDifference(MyView, vTargetAngles, fPlayerDistance);
+	auto result = RAD2DEG(atan(AngleDifference_ / myPos.Dot(EntityPos)));
+	return result;
+}
 
-	fPlayerDistance = myPos.DistToSqr(EntityPos);
-	return 0.0f;
+float CAimbot::AngleDifference(const Vector& ViewAngles, const Vector& TargetAngles, float Distance) const
+{
+	auto pitch = sinf(DEG2RAD(fabs(ViewAngles.x - TargetAngles.x))) * Distance;
+	auto yaw = sinf(DEG2RAD(fabs(ViewAngles.y - TargetAngles.y))) * Distance;
+
+	return sqrt(powf(pitch, 2.0) + powf(yaw, 2.0));
 }
 
 void CAimbot::MakeVector(const Vector& vIn, Vector& vOut) const
@@ -361,7 +355,7 @@ void CAimbot::TriggerBot(const smart_loc& Entity) const
 				SetViewAngles(target);
 			}(lp_->Pistol());
 			Sleep(5);
-		//	std::cout << lp_->getWeaponId() << std::endl;
+			//	std::cout << lp_->getWeaponId() << std::endl;
 			Shoot();
 		}
 	}

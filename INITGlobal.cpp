@@ -43,7 +43,7 @@ void initialization() {
 	thr.detach();
 
 	std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
-	int game_state;
+	int game_state = 0;
 	while (true)
 	{
 		game_state = mem.RPM<DWORD>(init::client_state + signatures::dwClientState_State);
@@ -58,7 +58,7 @@ void initialization() {
 		g_Aimbot.update(lp, init::client_state);
 		g_Aimbot.frame();
 		g_Aimbot.TriggerBot(lp->getEntityByCrosshairID((lp->getCrosshairID())));
-		Sleep(5);
+		Sleep(10);
 	}
 	Sleep(10000);
 }

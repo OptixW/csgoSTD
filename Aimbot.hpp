@@ -27,6 +27,8 @@ public:
 	void calcAngle(Vector& source, Vector& dst, Vector& out) const;
 	void update(smart_loc& Entity, DWORD cl_state);
 	void frame();
+	float AngleDifference(const Vector& ViewAngles, const Vector& TargetAngles, float Distance) const;
+	
 	void getBestTarget();
 	int nearestBone(const smart_loc& Entity) const;
 	float distnt(Vector EntityPos, Vector MyPos) const;
@@ -36,7 +38,7 @@ public:
 	void TriggerBot(const smart_loc& Entity) const;
 	void getBonePos(int boneID, const smart_loc& Entity, Vector& out) const;
 	float GetFOV(const Vector& viewangles, const Vector& vSrc, const Vector& vEnd) const;
-	float DynamicFov(smart_loc Entity) const;
+	float DynamicFov(const smart_loc &Entity) const;
 	void smoothAngle(Vector& currentAngle, float fSmoothPercentage, Vector& angles) const;
 	void MakeVector(const Vector& vIn, Vector& vOut) const;
 	void VelocityCompansate(Vector& EntPos);

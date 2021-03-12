@@ -8,4 +8,3 @@ namespace init {
 	extern int engine_dll;
 	extern int client_state;
 }
-

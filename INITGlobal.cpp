@@ -1,8 +1,8 @@
 #include "INITGlobal.hpp"
 #include "IBaseGame.hpp"
 #include <thread>
-
-std::string process_name = "csgo.exe";
+using namespace std::string_literals;
+auto process_name = "csgo.exe"s;
 Memory mem(process_name);
 
 void initialization();
@@ -11,7 +11,7 @@ visual g_Visual;
 int init::client_dll;
 int init::engine_dll;
 int init::client_state;
-constexpr int mod_cl_size = 0x5487000;
+constexpr int mod_cl_size = 0x5488000;
 
 void initialization() {
 	mem.getProcessID();
@@ -24,8 +24,8 @@ void initialization() {
 		exit(0);
 	}
 
-	std::string module_client = "client.dll";
-	std::string module_engine = "engine.dll";
+	auto module_client = "client.dll"s;
+	auto module_engine = "engine.dll"s;
 	if (mem.getModuleSize(module_client) != mod_cl_size)
 	{
 		std::cout << "The game was updated\n";
@@ -41,6 +41,7 @@ void initialization() {
 
 	std::thread thr(espThread);
 	thr.detach();
+	
 
 	std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
 	int game_state = 0;

@@ -85,6 +85,7 @@ int Memory::getModuleSize(std::string& module_name) const
 		}
 	}
 	return -1;
+	
 }
 
 int Memory::readInt(int address) const {

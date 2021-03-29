@@ -20,7 +20,7 @@ public:
 	bool isDormant() const;
 	DWORD getInput() const;
 	Vector getEyeView() const; // only for localplayer
-	std::shared_ptr<LocalPlayer> getEntityByCrosshairID(int crosshairID) const;
+	size_t getEntityByCrosshairID(int crosshairID) const;
 	size_t GetBase();
 	DWORD getBoneObj() const;
 	DWORD getMyGlowIndex() const;

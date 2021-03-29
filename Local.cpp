@@ -76,14 +76,14 @@ Vector LocalPlayer::getEyeView() const
 	return mem.RPM<Vector>(base_ + netvars::m_vecViewOffset);
 }
 
-std::shared_ptr<LocalPlayer> LocalPlayer::getEntityByCrosshairID(int crosshairID) const
+size_t LocalPlayer::getEntityByCrosshairID(int crosshairID) const
 {
-	std::shared_ptr<LocalPlayer> pl(new LocalPlayer());
-	pl->SetBase(mem.readInt(init::client_dll + signatures::dwEntityList + (crosshairID - 1) * 0x10));
-	return pl;
+	LocalPlayer pl;
+	pl.SetBase(mem.readInt(init::client_dll + signatures::dwEntityList + (crosshairID - 1) * 0x10));
+	return pl.GetBase();
 }
 
-size_t LocalPlayer::GetBase()
+size_t LocalPlayer::GetBase() 
 {
 	return base_;
 }

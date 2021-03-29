@@ -43,7 +43,9 @@ void initialization() {
 	thr.detach();
 	
 
-	std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
+
+	LocalPlayer lp;
+	LocalPlayer Entity;
 	int game_state = 0;
 	while (true)
 	{
@@ -54,11 +56,12 @@ void initialization() {
 			continue;
 		}
 
-		lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
+		lp.SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
 
 		g_Aimbot.update(lp, init::client_state);
 		g_Aimbot.frame();
-		g_Aimbot.TriggerBot(lp->getEntityByCrosshairID((lp->getCrosshairID())));
+		Entity.SetBase(lp.getEntityByCrosshairID((lp.getCrosshairID())));
+		g_Aimbot.TriggerBot(Entity);
 		Sleep(10);
 	}
 	Sleep(10000);
@@ -66,7 +69,7 @@ void initialization() {
 
 void espThread()
 {
-	std::shared_ptr<LocalPlayer> lp(new LocalPlayer);
+	LocalPlayer lp;
 	int game_state;
 	while (true)
 	{
@@ -76,7 +79,7 @@ void espThread()
 			Sleep(1000);
 			continue;
 		}
-		lp->SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
+		lp.SetBase(mem.RPM<DWORD>(init::client_dll + signatures::dwLocalPlayer));
 		g_Visual.update(lp);
 		g_Visual.GlowEsp();
 		Sleep(5);

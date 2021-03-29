@@ -30,7 +30,7 @@ void CAimbot::calcAngle(Vector& source, Vector& dst, Vector& out) const
 void CAimbot::VelocityCompansate(Vector& EntPos)
 {
 	float comp = 0.13f;
-	EntPos += mem.readFloat(lp_->GetBase() + netvars::m_vecVelocity) * comp;
+	EntPos += mem.readFloat(lp_.GetBase() + netvars::m_vecVelocity) * comp;
 }
 
 void CAimbot::Shoot() const
@@ -38,65 +38,6 @@ void CAimbot::Shoot() const
 	mem.WPM<int>(init::client_dll + signatures::dwForceAttack, 5);
 	Sleep(60);
 	mem.WPM<int>(init::client_dll + signatures::dwForceAttack, 4);
-}
-
-void CAimbot::frame()
-{
-	RCS();
-
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
-	{
-		if (!lp_->isJump())
-		{
-			mem.WPM<int>(init::client_dll + signatures::dwForceJump, 5);
-		}
-		else
-		{
-			mem.WPM<int>(init::client_dll + signatures::dwForceJump, 4);
-		}
-	}
-
-	if (GetAsyncKeyState(0x01) & 0x8000)
-	{
-		{
-			if (lp_->scopeWeapon())
-			{
-				return;
-			}
-			smart_loc Entity_(new LocalPlayer());
-
-			Vector myView;
-			Vector out;
-			Vector out2;
-			getBestTarget();
-			Entity_->SetBase(mem.RPM<int>(init::client_dll + signatures::dwEntityList + BestIndex_ * 0x10));
-			if (DynamicFov(Entity_) < 4.0)
-			{
-				auto MyPos = lp_->getPos() + lp_->getEyeView();
-				auto EntPos = Entity_->getPos();
-				getBonePos(nearestBone(Entity_), Entity_, out2);
-				calcAngle(MyPos, out2, out2);
-				out2 -= lp_->getPunchAngle() * 2.0f;
-				ClampAngles(out2);
-				GetViewAngles(myView);
-				if (Entity_->getHP() > 0)
-				{
-					smoothAngle(myView, 25, out2);
-					SetViewAngles(out2);
-				}
-				else
-				{
-					BestIndex_ = -1;
-					return;
-				}
-			}
-			else
-				return;
-			
-
-			Sleep(10);
-		}
-	}
 }
 
 void CAimbot::getBestTarget()
@@ -110,15 +51,14 @@ void CAimbot::getBestTarget()
 	Vector target;
 	for (int i = 1; i < 32; ++i)
 	{
-		smart_loc Entity_(new LocalPlayer());
-		Entity_->SetBase(mem.RPM<int>(init::client_dll + signatures::dwEntityList + i * 0x10));
+		Entity_.SetBase(mem.RPM<int>(init::client_dll + signatures::dwEntityList + i * 0x10));
 
-		if (!Entity_->GetBase())
+		if (!Entity_.GetBase())
 			continue;
-		if (Entity_->getHP() > 0 && Entity_->getTeam() != lp_->getTeam() && !Entity_->isDormant())
+		if (Entity_.getHP() > 0 && Entity_.getTeam() != lp_.getTeam() && !Entity_.isDormant())
 		{
 			GetViewAngles(myViewAngles);
-			source = lp_->getPos() + lp_->getEyeView();
+			source = lp_.getPos() + lp_.getEyeView();
 			getBonePos(nearestBone(Entity_), Entity_, EntityPos);
 
 			temp_fov = GetFOV(myViewAngles, source, EntityPos);
@@ -146,9 +86,9 @@ void CAimbot::RCS()//todo
 	Vector m_PunchAngle;
 	if (GetAsyncKeyState(0x01) & 0x8000)
 	{
-		if (lp_->getShotsFireID() > 1)
+		if (lp_.getShotsFireID() > 1)
 		{
-			Vector m_PunchAngle = lp_->getPunchAngle();
+			Vector m_PunchAngle = lp_.getPunchAngle();
 			GetViewAngles(mView);
 			start_ = mView;
 			mView += old;
@@ -169,10 +109,8 @@ void CAimbot::RCS()//todo
 	}
 }
 
-void CAimbot::update(smart_loc& pl, DWORD cl_state)
+void CAimbot::update(const LocalPlayer& pl, const DWORD cl_state)
 {
-	if (pl == nullptr)
-		return;
 	lp_ = pl;
 	cl_state_ = cl_state;
 }
@@ -182,7 +120,7 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	int current_sequence_number = mem.RPM<int>(init::client_state + signatures::clientstate_last_outgoing_command);
 	std::cout << current_sequence_number << std::endl;
 
-	DWORD dwUserCMD = mem.RPM<DWORD>(lp_->getInput() + 0x1);
+	DWORD dwUserCMD = mem.RPM<DWORD>(lp_.getInput() + 0x1);
 	dwUserCMD += (current_sequence_number % 150) * 0x64;
 	int iUserCMDSequenceNumberBase = 0;
 	iUserCMDSequenceNumberBase = mem.RPM<int>(dwUserCMD + 0x0);
@@ -200,9 +138,9 @@ void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working wit
 	//mem.WPM<Vector>(dwUserCMD + 0xC, angles);write your viewAngles
 }
 
-void CAimbot::getBonePos(int boneID, const smart_loc& Entity, Vector& out) const
+void CAimbot::getBonePos(int boneID, const LocalPlayer &Entity, Vector& out) const
 {
-	auto boneBase = Entity->getBoneObj();
+	auto boneBase = Entity.getBoneObj();
 	Vector vBone;
 	vBone.x = mem.RPM<float>(boneBase + 0x30 * boneID + 0x0C);
 	vBone.y = mem.RPM<float>(boneBase + 0x30 * boneID + 0x1C);
@@ -262,13 +200,13 @@ void CAimbot::smoothAngle(Vector& currentAngle, float fSmoothPercentage, Vector&
 	ClampAngles(angles);
 }
 
-float CAimbot::DynamicFov(const smart_loc& Entity) const //today my brain works fine! so, aimbot too works fine =)
+float CAimbot::DynamicFov(const LocalPlayer& Entity) const 
 {
 	float fPlayerDistance, fYawDegreeDifference;
 	Vector MyView = {};
 	GetViewAngles(MyView);
 	Vector vTargetAngles = {};
-	Vector myPos = lp_->getPos() + lp_->getEyeView();
+	Vector myPos = lp_.getPos() + lp_.getEyeView();
 	Vector EntityPos = {};
 	getBonePos(7, Entity, EntityPos);
 	calcAngle(myPos, EntityPos, vTargetAngles);
@@ -301,11 +239,11 @@ void CAimbot::GetViewAngles(Vector& angles) const
 	angles = mem.RPM<Vector>(init::client_state + signatures::dwClientState_ViewAngles);
 }
 
-int CAimbot::nearestBone(const smart_loc& Entity) const
+int CAimbot::nearestBone(const LocalPlayer& Entity) const
 {
-	Vector pos = lp_->getPos() + lp_->getEyeView();
+	Vector pos = lp_.getPos() + lp_.getEyeView();
 	Vector out;
-	Vector Entity_pos = Entity->getPos();
+	Vector Entity_pos = Entity.getPos();
 	float delta_ = 9999.0f;
 	Vector ViewAngles;
 	Vector res;
@@ -337,25 +275,25 @@ void CAimbot::SetViewAngles(const Vector& angles) const
 CAimbot::CAimbot()
 {
 }
-void CAimbot::TriggerBot(const smart_loc& Entity) const
+void CAimbot::TriggerBot(const LocalPlayer& Entity) const
 {
 	if (GetAsyncKeyState(VK_MENU) != 0) {
-		if (Entity->getHP() > 0 && Entity->getTeam() != lp_->getTeam()) {
+		if (Entity.getHP() > 0 && Entity.getTeam() != lp_.getTeam()) {
 			[&](bool p) {
 				if (!p)
 					return;
 				Vector myView;
 				GetViewAngles(myView);
-				Vector source = lp_->getPos() + lp_->getEyeView();
+				Vector source = lp_.getPos() + lp_.getEyeView();
 				Vector target;
 				Vector smoothed_angle;
 				getBonePos(nearestBone(Entity), Entity, target);
 				calcAngle(source, target, target);
 				smoothAngle(myView, 25, target);
 				SetViewAngles(target);
-			}(lp_->Pistol());
+			}(lp_.Pistol());
 			Sleep(5);
-			//	std::cout << lp_->getWeaponId() << std::endl;
+			//	std::cout << lp_.getWeaponId() << std::endl;
 			Shoot();
 		}
 	}

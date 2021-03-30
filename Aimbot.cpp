@@ -36,7 +36,7 @@ void CAimbot::VelocityCompansate(Vector& EntPos)
 void CAimbot::Shoot() const
 {
 	mem.WPM<int>(init::client_dll + signatures::dwForceAttack, 5);
-	Sleep(60);
+	Sleep(40);
 	mem.WPM<int>(init::client_dll + signatures::dwForceAttack, 4);
 }
 
@@ -114,6 +114,62 @@ void CAimbot::update(const LocalPlayer& pl, const DWORD cl_state)
 	lp_ = pl;
 	cl_state_ = cl_state;
 }
+
+void CAimbot::frame()
+	{
+		//RCS();
+
+		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+		{
+			if (!lp_.isJump())
+			{
+				mem.WPM<int>(init::client_dll + signatures::dwForceJump, 5);
+			}
+			else
+			{
+				mem.WPM<int>(init::client_dll + signatures::dwForceJump, 4);
+			}
+		}
+
+		if (GetAsyncKeyState(0x01) & 0x8000)
+		{
+			{
+				
+				Vector myView;
+				Vector out;
+				Vector out2;
+				getBestTarget();
+				Entity_.SetBase(mem.RPM<int>(init::client_dll + signatures::dwEntityList + BestIndex_ * 0x10));
+				if (DynamicFov(Entity_) < 4.0)
+				{
+					auto MyPos = lp_.getPos() + lp_.getEyeView();
+					auto EntPos = Entity_.getPos();
+					getBonePos(nearestBone(Entity_), Entity_, out2);
+					calcAngle(MyPos, out2, out2);
+					out2 -= lp_.getPunchAngle() * 2.0f;
+					ClampAngles(out2);
+					GetViewAngles(myView);
+					if (Entity_.getHP() > 0)
+					{
+						if (!lp_.scopeWeapon())
+						{
+							smoothAngle(myView, 30, out2);
+						}
+						if(lp_.iClip() > 0)
+						SetViewAngles(out2);
+					}
+					else
+					{
+						BestIndex_ = -1;
+						return;
+					}
+				}
+			
+
+				Sleep(5);
+			}
+		}
+	}
 
 void CAimbot::SilentSetViewAngles(const Vector& angles) const // not working without CreateMove Hooking
 {
@@ -253,13 +309,10 @@ int CAimbot::nearestBone(const LocalPlayer& Entity) const
 	{
 		getBonePos(BoneEnum::bones[i], Entity, out);
 		calcAngle(pos, out, out);
-		res = ViewAngles - out;
-		ClampAngles(res);
-		//DEG2RAD(res);
 
-		if (res.Length2D() < delta_)
+		if (AngleDifference(ViewAngles, out, out.Length()) < delta_)
 		{
-			delta_ = res.Length2D();
+			delta_ = AngleDifference(ViewAngles, out, out.Length());
 			bone_res = BoneEnum::bones[i];
 		}
 	}
@@ -279,22 +332,9 @@ void CAimbot::TriggerBot(const LocalPlayer& Entity) const
 {
 	if (GetAsyncKeyState(VK_MENU) != 0) {
 		if (Entity.getHP() > 0 && Entity.getTeam() != lp_.getTeam()) {
-			[&](bool p) {
-				if (!p)
-					return;
-				Vector myView;
-				GetViewAngles(myView);
-				Vector source = lp_.getPos() + lp_.getEyeView();
-				Vector target;
-				Vector smoothed_angle;
-				getBonePos(nearestBone(Entity), Entity, target);
-				calcAngle(source, target, target);
-				smoothAngle(myView, 25, target);
-				SetViewAngles(target);
-			}(lp_.Pistol());
-			Sleep(5);
-			//	std::cout << lp_.getWeaponId() << std::endl;
 			Shoot();
+			
 		}
+		Sleep(5);
 	}
 }

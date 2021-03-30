@@ -22,6 +22,7 @@ public:
 	Vector getEyeView() const; // only for localplayer
 	size_t getEntityByCrosshairID(int crosshairID) const;
 	size_t GetBase();
+	size_t iClip() const;
 	DWORD getBoneObj() const;
 	DWORD getMyGlowIndex() const;
 	void SetBase(size_t);

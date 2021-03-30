@@ -88,6 +88,12 @@ size_t LocalPlayer::GetBase()
 	return base_;
 }
 
+size_t LocalPlayer::iClip() const
+{
+	int temp = mem.readInt(init::client_dll + signatures::clipPointer);
+	return mem.readInt(temp + netvars::m_iClip1);
+}
+
 DWORD LocalPlayer::getBoneObj() const
 {
 	return mem.RPM<DWORD>(base_ + netvars::m_dwBoneMatrix);
